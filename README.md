@@ -1,4 +1,4 @@
-# PhysioFit
+<!-- # PhysioFit
 
 [![PyPI version](https://badge.fury.io/py/physiofit.svg)](https://badge.fury.io/py/physiofit)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/physiofit.svg)](https://pypi.python.org/pypi/physiofit/)
@@ -80,4 +80,4 @@ Peiro C., Millard P., de Simone A., Cahoreau E., Peyriga L., Enjalbert B., and H
 Loïc Le Grégam, Pierre Millard
 
 ## Contact
-:email: legregam@insa-toulouse.fr, millard@insa-toulouse.fr
+:email: legregam@insa-toulouse.fr, millard@insa-toulouse.fr -->
