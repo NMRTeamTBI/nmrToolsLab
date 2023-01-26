@@ -1,0 +1,13 @@
+README.md
+setup.cfg
+setup.py
+nmrtoolslab/__init__.py
+nmrtoolslab/__main__.py
+nmrtoolslab/prot_analysis.py
+nmrtoolslab.egg-info/PKG-INFO
+nmrtoolslab.egg-info/SOURCES.txt
+nmrtoolslab.egg-info/dependency_links.txt
+nmrtoolslab.egg-info/entry_points.txt
+nmrtoolslab.egg-info/not-zip-safe
+nmrtoolslab.egg-info/requires.txt
+nmrtoolslab.egg-info/top_level.txt

@@ -1,0 +1,2 @@
+[console_scripts]
+physiofit = nmrtoolslab.__main__:main
