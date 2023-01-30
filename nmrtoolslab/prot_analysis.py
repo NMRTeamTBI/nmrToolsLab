@@ -4,7 +4,66 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import itertools
 from scipy.optimize import curve_fit, minimize
+from pathlib import Path
 
+
+class nmrpipe_file(object):
+    def __init__(self,path,file_name,time_step,Exp=False):
+        self.path = path
+        self.file_name = file_name 
+        self.time_step = time_step
+
+        self.experimental_data = False
+
+        self.Exp = Exp
+        if self.Exp is True:
+            self.decay_curves()
+    def load_series_data(self):
+        #reads nlin.tab file for a series of experiments
+        # data path
+        full_path = Path(self.path, self.file_name)
+
+        # reads in data
+        data = pd.read_table(full_path,header=6,sep='\s+')
+
+        # clean and organize the data
+        data =  data.drop([0,1,2])
+
+        # get column names
+        column_names   =  data.columns.values.tolist()[1:]
+
+        # fix columns
+        data =  data.iloc[:, :-1]
+        data.columns = column_names
+        
+        return data 
+
+    def decay_curves(self):
+        data = self.load_series_data()
+
+        # columns with intensities
+        intensity_column_names = [s for s in data.columns.values.tolist()[1:] if "Z_" in s]
+        #intensity_column_idx = [i for i, j in enumerate(data.columns.values.tolist()[1:]) if j in intensity_column_names]        
+
+        # get list of residue   
+        reslist = data.loc[:,'ASS'].values.tolist()
+
+        #consolidated data
+        consolidated_data = []
+        for r in reslist:
+            res_data = data[data.loc[:,'ASS']==r].loc[:,intensity_column_names].iloc[0]
+            for t in range(len(intensity_column_names)):
+                if self.time_step is False:
+                    pass
+                else:
+                    time = t * self.time_step
+
+                consolidated_data.append([int(r),intensity_column_names[t],time,float(res_data.loc[intensity_column_names[t]])])
+                # exit()
+        # print(data.loc[:,intensity_column_names].head())
+        consolidated_data = pd.DataFrame(consolidated_data,columns=['ass','spec','delay','norm_int'])
+        self.experimental_data = consolidated_data
+        
 class sparky_list(object):
 
     def __init__(self,path,list_name,peak_label,dimension):
@@ -403,7 +462,7 @@ class pKA_fitting(object):
         ## ---  First nucleus 
         #Experimental data
         data_res_nucleus = data_res[data_res.nucleus==self.nuclei[0]]
-        fig_1 = go.Scatter(x=data_res_nucleus.loc[:,'pH'],y=data_res_nucleus.loc[:,'shift'],mode='markers',marker_color="#EF553B")
+        fig_1 = go.Scatter(x=data_res_nucleus.loc[:,'pH'],y=data_res_nucleus.loc[:,'shift'], name='data: '+str(self.nuclei[0]), mode='markers',marker_color="#EF553B")
         fig_full.add_trace(fig_1, row=1, col=1)
 
         #Fitted Curve

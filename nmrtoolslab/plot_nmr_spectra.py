@@ -108,39 +108,4 @@ def read_topspin_data(
             left    = max(ppm_window[0]['ppm']),                                      
             right   = min(ppm_window[0]['ppm'])                                       
             )
-        plot_name.set_xlabel(r'$^{'+str(ppm_window[0]['label'][0])+'}$'+str(ppm_window[0]['label'][1])+ ' (ppm)')        
-
-
-data_path = '/Users/cyrilcharlier/Documents/Research/nmrData'
-dataset = '8Carbios_ICCG_exchange'
-expno = '1005'
-procno = '1'
-
-test_2d = read_topspin_data(
-    data_path, 
-    dataset, 
-    expno, 
-    procno,
-    lowest_contour = 2e8,
-    contour_factor = 1.4,
-    n_contour = 30, 
-    linewitdh_plot = 1.2,
-    spec_lim=[[129.5,123.5],[9.78,9.37]],
-    plot_color= 'blue'
-    )
-
-# test_1d = read_topspin_data(
-#     data_path, 
-#     dataset, 
-#     expno, 
-#     procno, 
-#     lowest_contour = None,
-#     contour_factor = None,
-#     n_contour = None, 
-#     linewitdh_plot = 1.2,
-#     # plot_name=None,
-#     plot_color='blue',    
-#     spec_lim=[[1,-0.4]]
-#     )
-
-plt.show()
+        plot_name.set_xlabel(r'$^{'+str(ppm_window[0]['label'][0])+'}$'+str(ppm_window[0]['label'][1])+ ' (ppm)')
