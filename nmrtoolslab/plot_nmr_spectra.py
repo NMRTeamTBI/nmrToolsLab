@@ -3,6 +3,14 @@ from pathlib import Path
 import nmrglue as ng
 import matplotlib.pyplot as plt
 
+def cm2inch(*tupl):
+    inch = 2.54
+    if isinstance(tupl[0], tuple):
+        return tuple(i/inch for i in tupl[0])
+    else:
+        return tuple(i/inch for i in tupl)
+        
+
 def read_topspin_data(
     data_path, 
     dataset, 
@@ -15,7 +23,6 @@ def read_topspin_data(
     plot_name=None, 
     plot_color=None, 
     spec_lim=None,
-
     ):
 
     # get complete data path
@@ -52,14 +59,17 @@ def read_topspin_data(
             ppm = ppm[mask]
             ppm_window[k]['mask'] = mask
             ppm_window[k]['ppm'] = ppm
+        else:
+            ppm_window[k]['ppm'] = ppm
 
         label_info = [int(udic[k]['label'][:-1]),udic[k]['label'][-1]]             
         ppm_window[k]['label'] = label_info
 
-    if ndim == 2:
-        data = data.loc[ppm_window[0]['mask'],ppm_window[1]['mask']]
-    if ndim == 1:
-        data = data.loc[ppm_window[0]['mask']]
+    if spec_lim is not None:
+        if ndim == 2:
+            data = data.loc[ppm_window[0]['mask'],ppm_window[1]['mask']] 
+        if ndim == 1:
+            data = data.loc[ppm_window[0]['mask']] 
 
     # plot
     if plot_name is None:

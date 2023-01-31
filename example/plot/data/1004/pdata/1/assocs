@@ -1,0 +1,11 @@
+##TITLE= Parameter file, TopSpin 4.1.3
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 1	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= ead17
+$$ 2023-01-12 14:41:11.897 +0100  ead17@CZC1249Y8X
+$$ /opt/nmrdata/data/ead17/2023/8Carbios_ICCG_exchange/1004/pdata/1/assocs
+$$ process /opt/topspin4.1.3/prog/mod/dirdata
+##$MULTDISP= </opt/nmrdata/nmrsu/8Carbios_adsorb/4/pdata/1024|/opt/nmrdata/nmrsu/8Carbios_adsorb/5/pdata/1|null>
+##END=

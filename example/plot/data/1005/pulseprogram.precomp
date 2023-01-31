@@ -1,0 +1,409 @@
+# 1 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+;trosyf3gpphsi19.2
+;avance-version (12/01/11)
+;2D H-1/X correlation via TROSY
+;   using sensitivity improvement
+;phase sensitive using Echo/Antiecho method
+;using f3 - channel
+;water suppression using watergate sequence
+;(use parameterset TROSYF3GPPHSI19.2)
+;
+;M. Czisch & R. Boelens, J. Magn. Reson. 134, 158-160 (1998)
+;K. Pervushin, G. Wider & K. Wuethrich, J. Biomol. NMR 12, 
+;   345-348 (1998)
+;A. Meissner, T. Schulte-Herbrueggen, J. Briand & O.W. Sorensen, Mol. Phys. 96,
+;   1137-1142 (1998)
+;J. Weigelt, J. Am. Chem. Soc. 120, 10778-10779 (1998)
+;M. Rance, J.P. Loria & A.G. Palmer III, J. Magn. Reson. 136, 91-101 (1999)
+;G. Zhu, X.M. Kong & K.H. Sze, J. Biomol. NMR 13, 77-81 (1999)
+;
+;$CLASS=HighRes
+;$DIM=2D
+;$TYPE=
+;$SUBTYPE=
+;$COMMENT=
+
+
+# 1 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Avance.incl" 1
+;Avance4.incl
+;   for AV 4
+;
+;avance-version (16/08/18)
+;
+;$CLASS=Common Incl
+;$COMMENT=
+
+
+# 19 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Avance.incl"
+;setrtp0 denotes TimingController
+
+
+# 50 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Avance.incl"
+# 51 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Avance.incl"
+
+
+# 63 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Avance.incl"
+# 89 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Avance.incl"
+# 90 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Avance.incl"
+
+
+# 123 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Avance.incl"
+;#define LOWQ
+;#define HIGHQ
+
+
+;#define MIX_UP
+;#define MIX_DOWN
+# 136 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Avance.incl"
+;$Id:$
+# 27 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2" 2
+
+# 1 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Grad.incl" 1
+;Grad4.incl  -  include file for Gradient Spectroscopy
+;   for AV 4
+;
+;avance-version (16/05/23)
+;
+;$CLASS=Common Incl
+;$COMMENT=
+
+# 26 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Grad.incl"
+define list<gradient> EA=<EA>
+
+
+# 30 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Grad.incl"
+;$Id:$
+# 28 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2" 2
+
+# 1 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Delay.incl" 1
+;Delay.incl  -  include file for commonly used delays
+;
+;version (13/08/07)
+;
+;$CLASS=Common Incl
+;$COMMENT=
+
+# 9 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Delay.incl"
+;general delays
+
+define delay DELTA
+define delay DELTA1
+define delay DELTA2
+define delay DELTA3
+define delay DELTA4
+define delay DELTA5
+define delay DELTA6
+define delay DELTA7
+define delay DELTA8
+define delay DELTA9
+define delay DELTA10
+define delay DELTA11
+define delay DELTA12
+define delay DELTA13
+define delay DELTA14
+define delay DELTA15
+define delay DELTA16
+
+define delay TAU
+define delay TAU1
+define delay TAU2
+define delay TAU3
+define delay TAU4
+define delay TAU5
+define delay TAU6
+define delay TAU7
+define delay TAU8
+define delay TAU9
+# 40 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Delay.incl"
+define delay INCR1
+define delay INCR2
+define delay INCR3
+define delay INCR4
+define delay INCR5
+define delay INCR6
+
+
+;delays for centering pulses
+# 50 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Delay.incl"
+define delay CEN_HN1
+define delay CEN_HN2
+define delay CEN_HN3
+define delay CEN_HC1
+define delay CEN_HC2
+define delay CEN_HC3
+define delay CEN_HC4
+define delay CEN_HP1
+define delay CEN_HP2
+define delay CEN_CN1
+define delay CEN_CN2
+define delay CEN_CN3
+define delay CEN_CN4
+define delay CEN_CP1
+define delay CEN_CP2
+
+
+;loop counters
+# 69 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Delay.incl"
+define loopcounter COUNTER
+define loopcounter SCALEF
+define loopcounter FACTOR1
+define loopcounter FACTOR2
+define loopcounter FACTOR3
+define loopcounter FACTOR4
+define loopcounter FACTOR5
+define loopcounter FACTOR6
+
+
+# 80 "/root/.topspin-BladeEpu/local_acqu/ppDirs/Delay.incl"
+;$Id:$
+# 29 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2" 2
+
+
+# 32 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+"p2=p1*2"
+"p22=p21*2"
+"d11=30m"
+"d26=1s/(cnst4*4)"
+
+
+"d0=6u"
+# 40 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+"in0=inf1/2"
+
+
+"DELTA1=d26-p16-d16-4u"
+"DELTA2=d26-p1-p16-d16-4u"
+"DELTA3=d26-p16-d16-p27*2.385-d19*5-4u"
+"DELTA4=d19-p22/2"
+"DELTA5=d26-p16-d16-p27*2.154-p0*0.231-d19*5-p21-4u"
+# 52 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+"DELTA6=d0*2+p21*4/3.1416+2u"
+
+
+# 56 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+"l0=1"
+
+
+# 1 "mc_line 59 file /root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2 exp. def. part of mc cmd. before ze"
+; dimension 2D; AQ_mode  (F1) Echo-Antiecho
+define delay MCWRK
+define delay MCREST
+define delay d0orig
+"d0orig=d0"
+define loopcounter l0orig
+"l0orig=l0"
+define loopcounter t1loop
+"t1loop=0"
+define loopcounter ph1loop
+"ph1loop=0"
+define loopcounter F1CNT
+"F1CNT = min( 2 , td1)"
+define loopcounter ST1CNT
+"ST1CNT = max( 1 , trunc(td1 / 2))"
+"MCREST = d11 - d11"
+"MCWRK = 0.076923*d11"
+# 59 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+1 ze 
+# 1 "mc_line 59 file /root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2 exp. def. of mc cmd. after ze"
+LBLAV, MCWRK
+      "d0=d0orig + t1loop * in0 "
+      "phval5 = (ph1loop % 2) * 180"
+      MCWRK ip5 + phval5
+      "phval7 = (ph1loop % 2) * 180"
+      MCWRK ip7 + phval7
+      "phval3 = (t1loop * 180)%360"
+      MCWRK ip3 + phval3
+      "phval4 = (t1loop * 180)%360"
+      MCWRK ip4 + phval4
+      "phval31 = (t1loop * 180)%360"
+      MCWRK ip31 + phval31
+      "l0 = l0orig + ph1loop * 1"
+
+# 60 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+# 1 "mc_line 60 file /root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2 exp. start label for mc cmd."
+2 MCWRK  * 6
+LBLF1, MCWRK  * 6
+LBLST1, MCWRK
+  MCREST
+# 61 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+3 d1 pl1:f1
+  50u setrtp0|0 ctrlgrad 0
+  (p1 ph1)
+  4u
+  p16:gp1
+  d16
+  DELTA1
+  (center (p2 ph2) (p22 ph1):f3 )
+  4u
+  DELTA1
+  p16:gp1
+  d16
+  (p1 ph8) 
+# 75 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+  if "l0 %2 == 1"
+     {
+     (p21 ph3):f3
+     }
+  else
+     {
+     (p21 ph4):f3
+     }
+
+
+# 92 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+  d0 gron0
+  d0 gron0*-1
+  2u groff
+
+
+  (p22 ph1):f3
+  DELTA6
+# 100 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+  (p1 ph5)
+  4u
+  p16:gp2
+  d16
+  DELTA2 pl1:f1
+  (center (p2 ph1) (p22 ph1):f3 )
+  4u
+  DELTA1
+  p16:gp2
+  d16
+  (center (p1 ph1) (p21 ph2):f3 )
+
+  4u
+  p16:gp3
+  d16
+  DELTA3 pl18:f1
+
+  p27*0.231 ph1
+  d19*2
+  p27*0.692 ph1
+  d19*2
+  p27*1.462 ph1
+  DELTA4
+  (p22 ph1):f3
+  DELTA4
+  p27*1.462 ph6
+  d19*2
+  p27*0.692 ph6
+  d19*2
+  p0*0.231 ph6
+# 131 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+  DELTA5
+  p16:gp3
+  d16
+  4u setrtp0^0 ctrlgrad 4047
+
+  (p21 ph7):f3
+  go=2 ph31
+# 1 "mc_line 138 file /root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2 exp. mc cmd. in line"
+  MCWRK  wr #0 if #0 zd 
+
+  "ph1loop+=1 * (1 - kronecker_delta(1 , td1) )"
+      "d0=d0orig + t1loop * in0 "
+      "phval5 = (ph1loop % 2) * 180"
+      MCWRK ip5 + phval5
+      "phval7 = (ph1loop % 2) * 180"
+      MCWRK ip7 + phval7
+      "phval3 = (t1loop * 180)%360"
+      MCWRK ip3 + phval3
+      "phval4 = (t1loop * 180)%360"
+      MCWRK ip4 + phval4
+      "phval31 = (t1loop * 180)%360"
+      MCWRK ip31 + phval31
+      "l0 = l0orig + ph1loop * 1"
+
+  lo to LBLF1 times F1CNT
+  MCWRK 
+
+  "t1loop+=1 * (1 - kronecker_delta(1 , td1) )"
+      "d0=d0orig + t1loop * in0 "
+      "phval5 = (ph1loop % 2) * 180"
+      MCWRK ip5 + phval5
+      "phval7 = (ph1loop % 2) * 180"
+      MCWRK ip7 + phval7
+      "phval3 = (t1loop * 180)%360"
+      MCWRK ip3 + phval3
+      "phval4 = (t1loop * 180)%360"
+      MCWRK ip4 + phval4
+      "phval31 = (t1loop * 180)%360"
+      MCWRK ip31 + phval31
+      "l0 = l0orig + ph1loop * 1"
+
+  lo to LBLST1 times ST1CNT
+  MCWRK 
+  "t1loop=0"
+  "ph1loop=0"
+  MCWRK rf #0
+  lo to LBLAV times tdav
+# 139 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+exit 
+  
+
+ph1=0
+ph2=1
+ph3=1 3 2 0
+ph4=3 1 2 0
+ph5=3
+ph6=2
+ph7=2
+ph8=3
+ph31=0 2 3 1
+# 153 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+;pl1 : f1 channel - power level for pulse (default)
+;pl3 : f3 channel - power level for pulse (default)
+;pl18: f1 channel - power level for 3-9-19-pulse (watergate)
+;sp3: f2 channel - shaped pulse 180 degree (adiabatic)
+;p0 : f1 channel -  90 degree pulse at pl18
+;                      use for fine adjustment
+;p1 : f1 channel -  90 degree high power pulse
+;p2 : f1 channel - 180 degree high power pulse
+;p14: f2 channel - 180 degree shaped pulse for inversion (adiabatic)
+;p16: homospoil/gradient pulse
+;p21: f3 channel -  90 degree high power pulse
+;p22: f3 channel - 180 degree high power pulse
+;p27: f1 channel -  90 degree pulse at pl18
+;d0 : incremented delay (2D)                         [6 usec]
+;d1 : relaxation delay; 1-5 * T1
+;d11: delay for disk I/O                             [30 msec]
+;d16: delay for homospoil/gradient recovery
+;d19: delay for binomial water suppression
+;     d19 = (1/(2*d)), d = distance of next null (in Hz)
+;d26 : 1/(4J)YH
+;cnst4: = J(YH)
+;inf1: 1/SW(X) = 2 * DW(X)
+;in0: 1/(2 * SW(X)) = DW(X)
+;nd0: 2
+;ns: 4 * n
+;ds: 16
+;td1: number of experiments
+;FnMODE: echo-antiecho
+
+
+;use gradient ratio:    gp 0 : gp 1 : gp 2 : gp 3
+;                          3 :   30 :   45 :   50
+# 186 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+;for z-only gradients:
+;gpz0: 3%
+;gpz1: 30%
+;gpz2: 45%
+;gpz3: 50%
+
+;use gradient files:
+;gpnam1: SMSQ10.100
+;gpnam2: SMSQ10.100
+;gpnam3: SMSQ10.100
+
+# 198 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+                                          ;preprocessor-flags-start
+;LABEL_CN: for C-13 and N-15 labeled samples start experiment with
+;             option -DLABEL_CN (eda: ZGOPTNS)
+                                          ;preprocessor-flags-end
+
+
+# 205 "/root/.topspin-BladeEpu/local_acqu/ppDirs/trosyf3gpphsi19.2"
+;$Id:$

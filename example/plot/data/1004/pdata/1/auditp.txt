@@ -1,0 +1,741 @@
+##TITLE= Audit trail, TopSpin 4.0.8
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= cyrilcharlier
+$$ /Users/cyrilcharlier/Documents/Research/nmrData/8Carbios_ICCG_exchange/1004/pdata/1/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2021-12-08 09:50:58.321 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+$$ /opt/nmrdata/nmrsu/Test_install_2/2/audita.txt
+(   2,<2021-12-08 09:55:19.661 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '581631d6-580c-11ec-b483-0030d628fa8a'
+       started at 2021-12-08 09:50:58.337 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-08 09:55:19.660 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 64K
+       5E 80 DE EF 29 8B 26 A7 AA 32 54 AD 2D A0 F6 BD>)
+(   3,<2021-12-08 10:55:19.912 +0100>,<nmrsu>,<CZC1249Y8X>,<xwish3>,<TopSpin 4.1.3>,
+      <ICON-NMR User ID: nmrsu
+       double data hash MD5: 64K
+       5E 80 DE EF 29 8B 26 A7 AA 32 54 AD 2D A0 F6 BD>)
+(   4,<2021-12-09 14:25:54.794 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 2 "Test_install_2" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 64K
+       5E 80 DE EF 29 8B 26 A7 AA 32 54 AD 2D A0 F6 BD>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCGS165A_15N13Ctest/1/audita.txt
+(   5,<2021-12-09 14:39:29.471 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(   6,<2021-12-09 14:39:29.510 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(   7,<2021-12-09 13:39:30.435 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(   8,<2021-12-09 13:39:30.437 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(   9,<2021-12-09 13:39:36.741 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '6f8dd730-58f5-11ec-a664-0030d628fa8a'
+       started at 2021-12-09 13:39:30.452 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-09 13:39:36.740 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 64K
+       E2 EF 03 E9 90 1A 49 4A E2 D9 3F 89 F2 42 36 32>)
+(  10,<2021-12-09 14:39:57.909 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  11,<2021-12-09 14:39:57.951 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  12,<2021-12-09 13:39:58.898 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  13,<2021-12-09 13:39:58.900 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  14,<2021-12-09 13:40:03.022 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '808495c4-58f5-11ec-a0cf-0030d628fa8a'
+       started at 2021-12-09 13:39:58.916 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-09 13:40:03.022 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 16K
+       DC C8 F9 97 9F 2E D1 8F F2 11 CA 6D 70 28 33 50>)
+(  15,<2021-12-09 14:40:25.136 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  16,<2021-12-09 14:40:25.164 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  17,<2021-12-09 13:40:26.098 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  18,<2021-12-09 13:40:26.101 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  19,<2021-12-09 13:40:29.972 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '90bba108-58f5-11ec-81cb-0030d628fa8a'
+       started at 2021-12-09 13:40:26.116 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-09 13:40:29.972 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 16K
+       DD 21 9A D9 E4 E2 AE 94 3A F2 17 BB B7 CC FF 87>)
+(  20,<2021-12-09 14:40:49.469 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  21,<2021-12-09 14:40:49.502 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  22,<2021-12-09 13:40:50.426 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  23,<2021-12-09 13:40:50.429 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  24,<2021-12-09 13:40:54.417 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '9f3c0010-58f5-11ec-8780-0030d628fa8a'
+       started at 2021-12-09 13:40:50.443 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-09 13:40:54.414 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 16K
+       B4 62 4C BD AA 2F 6C 3E 4E 71 00 E8 FC 9D 42 70>)
+(  25,<2021-12-09 14:41:09.632 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 1 "8Carbios_ICCGS165A_15N13Ctest" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 16K
+       B4 62 4C BD AA 2F 6C 3E 4E 71 00 E8 FC 9D 42 70>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCGS165A_15N13Ctest/2/audita.txt
+(  26,<2021-12-09 14:41:54.968 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  27,<2021-12-09 14:41:55.006 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  28,<2021-12-09 13:41:55.881 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  29,<2021-12-09 13:41:55.884 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  30,<2021-12-09 13:42:13.022 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID 'c6403f64-58f5-11ec-ab11-0030d628fa8a'
+       started at 2021-12-09 13:41:55.898 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-09 13:42:13.019 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       D4 AC EE C9 C3 2A EB 6C C6 4E AC C3 9F C9 69 FC>)
+(  31,<2021-12-09 14:43:02.094 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 2 "8Carbios_ICCGS165A_15N13Ctest" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       D4 AC EE C9 C3 2A EB 6C C6 4E AC C3 9F C9 69 FC>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCGS165A_15N13Ctest/4/audita.txt
+(  32,<2021-12-09 14:43:16.723 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  33,<2021-12-09 14:43:28.540 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  34,<2021-12-09 13:43:29.547 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  35,<2021-12-09 13:43:29.549 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  36,<2021-12-09 13:43:48.132 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID 'fe1648d4-58f5-11ec-8717-0030d628fa8a'
+       started at 2021-12-09 13:43:29.561 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-09 13:43:48.129 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       53 69 AA 08 B1 33 BF A9 18 D1 04 E6 3E 0E 03 D3>)
+(  37,<2021-12-09 15:03:03.207 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  38,<2021-12-09 15:03:03.593 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  39,<2021-12-09 14:03:04.535 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  40,<2021-12-09 14:03:04.537 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  41,<2021-12-09 14:03:23.092 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID 'ba6beca8-58f8-11ec-94d2-0030d628fa8a'
+       started at 2021-12-09 14:03:04.552 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-09 14:03:23.091 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       2C 23 E5 B1 57 90 77 CB 77 41 0C C8 B2 FD E5 4F>)
+(  42,<2021-12-10 09:56:02.465 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 4 "8Carbios_ICCGS165A_15N13Ctest" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       2C 23 E5 B1 57 90 77 CB 77 41 0C C8 B2 FD E5 4F>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCGS165A_15N13Ctest/22/audita.txt
+(  43,<2021-12-10 10:05:06.363 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  44,<2021-12-10 10:43:30.830 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  45,<2021-12-10 09:43:32.224 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  46,<2021-12-10 09:43:32.226 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  47,<2021-12-10 09:43:50.261 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID 'a30804d4-599d-11ec-8929-0030d628fa8a'
+       started at 2021-12-10 09:43:32.238 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-10 09:43:50.260 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       6F 6B 6C 70 35 47 7E 90 F0 57 31 60 BE DF 95 95>)
+(  48,<2021-12-10 14:51:33.768 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 22 "8Carbios_ICCGS165A_15N13Ctest" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       6F 6B 6C 70 35 47 7E 90 F0 57 31 60 BE DF 95 95>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCGS165A_15N13Ctest/35/audita.txt
+(  49,<2021-12-10 14:51:38.432 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  50,<2021-12-10 14:51:38.467 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  51,<2021-12-10 13:51:40.010 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  52,<2021-12-10 13:51:40.013 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  53,<2021-12-10 13:51:57.778 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '4cd359b0-59c0-11ec-ad60-0030d628fa8a'
+       started at 2021-12-10 13:51:40.028 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-10 13:51:57.776 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       1A 97 B5 B2 20 24 BF AA 5B 33 F9 A1 12 97 CF 60>)
+(  54,<2021-12-10 16:26:37.406 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 35 "8Carbios_ICCGS165A_15N13Ctest" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       1A 97 B5 B2 20 24 BF AA 5B 33 F9 A1 12 97 CF 60>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCGcomp/2/audita.txt
+(  55,<2021-12-10 17:14:24.688 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  56,<2021-12-10 17:14:29.360 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  57,<2021-12-10 16:14:30.927 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  58,<2021-12-10 16:14:30.929 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  59,<2021-12-10 16:14:48.631 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '417f7a62-59d4-11ec-8b55-0030d628fa8a'
+       started at 2021-12-10 16:14:30.943 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-10 16:14:48.631 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       37 22 9E 91 F7 89 BA 85 5E 26 A0 70 F4 B3 E1 88>)
+(  60,<2021-12-20 10:56:25.644 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 2 "8Carbios_ICCGcomp" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       37 22 9E 91 F7 89 BA 85 5E 26 A0 70 F4 B3 E1 88>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCG_HNHA/2/audita.txt
+(  61,<2021-12-20 10:58:51.025 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  62,<2021-12-20 09:58:53.429 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  63,<2021-12-20 09:58:53.432 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  64,<2021-12-20 09:59:11.903 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '703e863c-617b-11ec-bd2b-0030d628fa8a'
+       started at 2021-12-20 09:58:53.445 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2021-12-20 09:59:11.900 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       48 98 48 82 C8 4B 52 B3 4D 6B 14 C1 11 04 9C A1>)
+(  65,<2022-01-03 10:28:29.634 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 2 "8Carbios_ICCG_HNHA" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       48 98 48 82 C8 4B 52 B3 4D 6B 14 C1 11 04 9C A1>)
+$$ /opt/nmrdata/nmrsu/IMAGING_test/22/audita.txt
+(  66,<2022-01-03 10:43:19.469 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  67,<2022-01-03 09:43:29.721 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  68,<2022-01-03 09:43:29.724 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  69,<2022-01-03 09:43:33.558 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '9b7003e0-6c79-11ec-a892-0030d628fa8a'
+       started at 2022-01-03 09:43:29.739 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-03 09:43:33.555 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       71 00 F3 D4 C4 A4 74 77 94 DE 97 66 84 43 DC 41>)
+(  70,<2022-01-03 10:43:37.003 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  71,<2022-01-03 09:43:47.218 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  72,<2022-01-03 09:43:47.288 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  73,<2022-01-03 09:43:51.188 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID 'a5e0e7ea-6c79-11ec-b1cf-0030d628fa8a'
+       started at 2022-01-03 09:43:47.305 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-03 09:43:51.185 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       AC F9 17 1B BC F4 AE 84 78 C9 D5 06 72 29 F6 85>)
+(  74,<2022-01-03 10:44:37.942 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  75,<2022-01-03 09:44:48.177 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  76,<2022-01-03 09:44:48.179 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  77,<2022-01-03 09:45:00.447 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID 'ca341202-6c79-11ec-b2fa-0030d628fa8a'
+       started at 2022-01-03 09:44:48.191 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-03 09:45:00.444 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       DC F9 74 33 95 0B 08 CA 6C 9B D3 02 34 B9 D9 9E>)
+(  78,<2022-01-03 14:41:10.361 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 22 "IMAGING_test" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       DC F9 74 33 95 0B 08 CA 6C 9B D3 02 34 B9 D9 9E>)
+$$ /opt/nmrdata/nmrsu/IMAGING_test/12/audita.txt
+(  79,<2022-01-03 14:48:22.246 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  80,<2022-01-03 13:48:32.530 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  81,<2022-01-03 13:48:32.533 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  82,<2022-01-03 13:48:44.876 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID 'd6fe70e6-6c9b-11ec-8f77-0030d628fa8a'
+       started at 2022-01-03 13:48:32.549 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-03 13:48:44.874 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       DE 41 70 AB CA 8F 6F 2F F8 E7 80 11 98 D8 A4 7E>)
+(  83,<2022-01-03 15:32:45.978 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 12 "IMAGING_test" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       DE 41 70 AB CA 8F 6F 2F F8 E7 80 11 98 D8 A4 7E>)
+$$ /opt/nmrdata/nmrsu/IMAGING_test/32/audita.txt
+(  84,<2022-01-03 15:40:38.697 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  85,<2022-01-03 14:40:49.116 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  86,<2022-01-03 14:40:49.120 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  87,<2022-01-03 14:41:01.469 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '248b2906-6ca3-11ec-a36a-0030d628fa8a'
+       started at 2022-01-03 14:40:49.135 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-03 14:41:01.466 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       C4 97 F9 0D 29 B1 79 BD A0 69 3A E8 12 84 93 F0>)
+(  88,<2022-01-03 16:02:29.445 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 32 "IMAGING_test" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       C4 97 F9 0D 29 B1 79 BD A0 69 3A E8 12 84 93 F0>)
+$$ /opt/nmrdata/nmrsu/IMAGING_test/102/audita.txt
+(  89,<2022-01-03 16:09:43.483 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  90,<2022-01-03 15:09:54.057 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  91,<2022-01-03 15:09:54.060 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  92,<2022-01-03 15:10:06.117 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '349b34ae-6ca7-11ec-8524-0030d628fa8a'
+       started at 2022-01-03 15:09:54.073 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-03 15:10:06.114 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       4A 05 A9 49 7D 12 7A AE 27 2A 61 5E 9C BD 6A 32>)
+(  93,<2022-01-03 16:10:27.496 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  94,<2022-01-03 15:10:37.814 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  95,<2022-01-03 15:10:37.817 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+(  96,<2022-01-03 15:10:50.118 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '4eb50860-6ca7-11ec-a5d7-0030d628fa8a'
+       started at 2022-01-03 15:10:37.829 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-03 15:10:50.115 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       B6 3B 6F 1B 94 22 03 E0 B2 DD C4 F0 75 9E 1D 74>)
+(  97,<2022-01-03 16:11:12.855 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+(  98,<2022-01-03 15:11:23.332 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+(  99,<2022-01-03 15:11:23.335 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 100,<2022-01-03 15:11:35.359 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '69d69172-6ca7-11ec-aaf9-0030d628fa8a'
+       started at 2022-01-03 15:11:23.347 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-03 15:11:35.356 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       42 BE 22 EB 4E 27 EF AA 63 3A DF D6 4E B9 8D 63>)
+( 101,<2022-01-03 17:31:45.509 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 102 "IMAGING_test" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       42 BE 22 EB 4E 27 EF AA 63 3A DF D6 4E B9 8D 63>)
+$$ /opt/nmrdata/nmrsu/IMAGING_test/202/audita.txt
+( 102,<2022-01-03 17:36:45.816 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 103,<2022-01-03 17:37:08.498 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 104,<2022-01-03 16:37:18.847 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 105,<2022-01-03 16:37:18.850 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 106,<2022-01-03 16:37:31.451 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '6ac03668-6cb3-11ec-8f38-0030d628fa8a'
+       started at 2022-01-03 16:37:18.866 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-03 16:37:31.448 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       C5 EC 95 74 79 25 AF B9 CB 6E 73 90 46 1C 9C F5>)
+( 107,<2022-01-04 16:51:16.502 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 202 "IMAGING_test" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       C5 EC 95 74 79 25 AF B9 CB 6E 73 90 46 1C 9C F5>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCG_P_image/2/audita.txt
+( 108,<2022-01-05 13:45:21.105 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 109,<2022-01-05 12:45:32.538 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 110,<2022-01-05 12:45:32.541 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 111,<2022-01-05 12:45:45.011 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '5ec52594-6e25-11ec-8fd9-0030d628fa8a'
+       started at 2022-01-05 12:45:32.556 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-05 12:45:45.008 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       7D FF F7 B2 C1 09 32 04 D3 D6 A4 22 23 1E 1B 43>)
+( 112,<2022-01-05 14:18:43.263 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 113,<2022-01-05 13:18:54.682 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 114,<2022-01-05 13:18:54.686 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 115,<2022-01-05 13:19:07.646 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '08243b3a-6e2a-11ec-b412-0030d628fa8a'
+       started at 2022-01-05 13:18:54.700 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-05 13:19:07.643 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       B9 F1 44 4B 8F 75 69 C7 A9 8F 5A 63 BC E7 1A 4C>)
+( 116,<2022-01-14 14:53:34.712 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 2 "8Carbios_ICCG_P_image" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       B9 F1 44 4B 8F 75 69 C7 A9 8F 5A 63 BC E7 1A 4C>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCG_P_image2/2/audita.txt
+( 117,<2022-01-14 16:11:36.045 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 118,<2022-01-14 15:11:52.626 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 119,<2022-01-14 15:11:52.629 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 120,<2022-01-14 15:12:05.241 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '4dd8148e-754c-11ec-92bf-0030d628fa8a'
+       started at 2022-01-14 15:11:52.642 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-14 15:12:05.238 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       9C 34 08 F2 93 3C 2F 34 A7 3C FA 09 34 9D 8D C7>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCG_P_image3/2/audita.txt
+( 121,<2022-01-16 10:09:00.793 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 122,<2022-01-16 09:09:00.409 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 123,<2022-01-16 09:09:00.412 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 124,<2022-01-16 09:09:12.269 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID 'f166dce2-76ab-11ec-a0dd-0030d628fa8a'
+       started at 2022-01-16 09:09:00.428 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-16 09:09:12.266 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       8F F4 2D 11 A3 4B 0A F8 FB 86 67 03 52 15 0D FE>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCG_P_image6/2/audita.txt
+( 125,<2022-01-19 15:52:07.367 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 126,<2022-01-19 14:52:08.308 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 127,<2022-01-19 14:52:08.311 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 128,<2022-01-19 14:52:21.673 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '5ffc9880-7937-11ec-92df-0030d628fa8a'
+       started at 2022-01-19 14:52:08.328 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-19 14:52:21.670 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       4D 02 67 27 8D 51 1E A0 13 68 D3 05 B6 F8 2C F8>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCG_P_image7/2/audita.txt
+( 129,<2022-01-24 15:55:00.299 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 130,<2022-01-24 14:55:02.718 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 131,<2022-01-24 14:55:02.722 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 132,<2022-01-24 14:55:15.261 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '9c0233fc-7d25-11ec-9231-0030d628fa8a'
+       started at 2022-01-24 14:55:02.738 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-01-24 14:55:15.258 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       D2 26 98 17 58 FF 4F 00 27 4B 23 FA D0 F6 34 0E>)
+( 133,<2022-02-07 09:24:25.863 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 2 "8Carbios_ICCG_P_image7" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       D2 26 98 17 58 FF 4F 00 27 4B 23 FA D0 F6 34 0E>)
+$$ /opt/nmrdata/nmrsu/8Carbios_adsorb/2/audita.txt
+( 134,<2022-02-07 09:43:09.797 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 135,<2022-02-07 08:43:16.144 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 136,<2022-02-07 08:43:16.148 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 137,<2022-02-07 09:43:23.151 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 2 "8Carbios_adsorb" "/opt/nmrdata/nmrsu">)
+$$ /opt/nmrdata/nmrsu/8Carbios_adsorb/3/audita.txt
+( 138,<2022-02-07 09:45:04.726 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 139,<2022-02-07 08:45:11.143 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 140,<2022-02-07 08:45:11.147 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 141,<2022-02-07 08:45:38.649 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '42869336-87f2-11ec-947e-0030d628fa8a'
+       started at 2022-02-07 08:45:11.161 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-02-07 08:45:38.646 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       A1 4D 30 D3 E8 02 9E 10 D4 50 23 CC 7B 09 67 47>)
+( 142,<2022-02-07 09:46:00.064 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 3 "8Carbios_adsorb" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       A1 4D 30 D3 E8 02 9E 10 D4 50 23 CC 7B 09 67 47>)
+$$ /opt/nmrdata/nmrsu/8Carbios_adsorb/4/audita.txt
+( 143,<2022-02-07 09:46:17.285 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 144,<2022-02-07 09:46:17.328 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 145,<2022-02-07 08:46:23.827 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 146,<2022-02-07 08:46:23.830 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 147,<2022-02-07 10:00:53.450 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 4 "8Carbios_adsorb" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       6B 46 0E AD C3 8F AF A3 12 B3 10 D8 AF BD 3F A5>)
+$$ /opt/nmrdata/nmrsu/8Carbios_adsorb/5/audita.txt
+( 148,<2022-02-07 10:08:41.147 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 149,<2022-02-07 10:08:41.183 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 150,<2022-02-07 09:08:47.583 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 151,<2022-02-07 09:08:47.587 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 152,<2022-02-07 09:30:14.353 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '8ed012c8-87f5-11ec-a95a-0030d628fa8a'
+       started at 2022-02-07 09:08:47.604 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-02-07 09:30:14.350 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       5F 2B 14 F7 C5 FD AC 4F D0 73 94 FE 68 C8 B3 51>)
+( 153,<2022-02-07 10:34:24.547 +0100>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 5 "8Carbios_adsorb" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       5F 2B 14 F7 C5 FD AC 4F D0 73 94 FE 68 C8 B3 51>)
+$$ /opt/nmrdata/nmrsu/8Carbios_adsorb/6/audita.txt
+( 154,<2022-02-07 10:34:31.352 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 155,<2022-02-07 10:34:31.393 +0100>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 156,<2022-02-07 09:34:37.816 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 157,<2022-02-07 09:34:37.821 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 158,<2022-02-07 10:17:24.609 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID '2acd67d6-87f9-11ec-a790-0030d628fa8a'
+       started at 2022-02-07 09:34:37.836 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-02-07 10:17:24.606 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       68 50 61 FA F0 5A FC 08 C7 CF EF 57 9C F6 6E FC>)
+( 159,<2022-07-01 14:28:25.051 +0200>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 6 "8Carbios_adsorb" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       68 50 61 FA F0 5A FC 08 C7 CF EF 57 9C F6 6E FC>)
+$$ /opt/nmrdata/nmrsu/8Carbios_ICCGS165A_Histaut/4/audita.txt
+( 160,<2022-07-01 17:31:23.717 +0200>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 161,<2022-07-01 15:31:27.378 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 162,<2022-07-01 15:31:27.382 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 163,<2022-07-01 15:31:45.983 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID 'df5ddc10-f952-11ec-a7ec-0030d628fa8a'
+       started at 2022-07-01 15:31:27.398 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-07-01 15:31:45.980 +0000
+       configuration hash MD5:
+       CB B4 D2 03 1E 77 54 5C C3 4F 40 5C 55 5F EA 3E
+       double data hash MD5: 8K
+       99 56 5A 3D 07 EE 4F 9E BA 70 22 6A E0 71 89 DE>)
+( 164,<2022-08-30 10:45:27.316 +0200>,<nmrsu>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 4 "8Carbios_ICCGS165A_Histaut" "/opt/nmrdata/nmrsu"
+       double data hash MD5: 8K
+       99 56 5A 3D 07 EE 4F 9E BA 70 22 6A E0 71 89 DE>)
+$$ /opt/nmrdata/nmrsu/8Carbios_15NICCGwt_His4.0/4/audita.txt
+( 165,<2022-08-30 10:58:23.792 +0200>,<nmrsu>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 166,<2022-08-30 08:58:23.412 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 167,<2022-08-30 08:58:23.416 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 168,<2022-08-30 08:58:41.114 +0000>,<nmrsu>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'nmrsu'
+       on data set with UUID 'e707a87e-2841-11ed-af92-0030d628fa8a'
+       started at 2022-08-30 08:58:23.432 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-08-30 08:58:41.113 +0000
+       configuration hash MD5:
+       32 63 9E 4E 09 21 69 DB A5 E3 4F 2A 8A 45 DB 04
+       double data hash MD5: 8K
+       91 33 88 01 3C 10 66 DD E0 2F 11 2F 9D E2 CD E7>)
+$$ /opt/nmrdata/data/ead17/2022/8Carbios_15NICCGwt_His8.0/4/audita.txt
+( 169,<2022-09-02 14:39:33.599 +0200>,<ead17>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 170,<2022-09-02 14:39:38.972 +0200>,<ead17>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 171,<2022-09-02 12:39:38.525 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 172,<2022-09-02 12:39:38.530 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 173,<2022-09-02 12:39:55.841 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'ead17'
+       on data set with UUID '4eda6f82-2abc-11ed-b61e-0030d628fa8a'
+       started at 2022-09-02 12:39:38.546 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-09-02 12:39:55.838 +0000
+       configuration hash MD5:
+       32 63 9E 4E 09 21 69 DB A5 E3 4F 2A 8A 45 DB 04
+       double data hash MD5: 8K
+       38 A1 12 2D A0 F8 B9 7A 87 FD 8A CF EB 17 B4 17>)
+$$ /opt/nmrdata/data/ead17/2022/8Carbios_15NICCGwt_His5.0/4/audita.txt
+( 174,<2022-09-08 08:13:33.365 +0200>,<ead17>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 175,<2022-09-08 08:13:33.407 +0200>,<ead17>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 176,<2022-09-08 06:13:35.997 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 177,<2022-09-08 06:13:36.002 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 178,<2022-09-08 06:13:53.237 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'ead17'
+       on data set with UUID '5f631d88-2f3d-11ed-a56b-0030d628fa8a'
+       started at 2022-09-08 06:13:36.018 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2022-09-08 06:13:53.234 +0000
+       configuration hash MD5:
+       32 63 9E 4E 09 21 69 DB A5 E3 4F 2A 8A 45 DB 04
+       double data hash MD5: 8K
+       24 CF 11 3F B2 3B 62 DC ED C7 14 28 C1 14 9A 9C>)
+( 179,<2023-01-12 12:52:16.074 +0100>,<ead17>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 4 "8Carbios_15NICCGwt_His5.0" "/opt/nmrdata/data/ead17/2022"
+       double data hash MD5: 8K
+       24 CF 11 3F B2 3B 62 DC ED C7 14 28 C1 14 9A 9C>)
+$$ /opt/nmrdata/data/ead17/2023/8Carbios_ICCG_exchange/4/audita.txt
+( 180,<2023-01-12 13:01:17.228 +0100>,<ead17>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 181,<2023-01-12 13:01:17.269 +0100>,<ead17>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 182,<2023-01-12 12:01:19.102 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 183,<2023-01-12 12:01:19.106 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 184,<2023-01-12 12:01:37.608 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'ead17'
+       on data set with UUID 'd2cf3c0c-9270-11ed-897e-0030d628fa8a'
+       started at 2023-01-12 12:01:19.123 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2023-01-12 12:01:37.608 +0000
+       configuration hash MD5:
+       32 63 9E 4E 09 21 69 DB A5 E3 4F 2A 8A 45 DB 04
+       double data hash MD5: 8K
+       02 94 25 48 F9 61 0D 1E FD F4 49 1F BC 73 89 DD>)
+( 185,<2023-01-12 13:02:08.457 +0100>,<ead17>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 186,<2023-01-12 12:02:10.260 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 187,<2023-01-12 12:02:10.265 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 188,<2023-01-12 12:02:28.619 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'ead17'
+       on data set with UUID 'f14f1be8-9270-11ed-9588-0030d628fa8a'
+       started at 2023-01-12 12:02:10.281 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2023-01-12 12:02:28.616 +0000
+       configuration hash MD5:
+       32 63 9E 4E 09 21 69 DB A5 E3 4F 2A 8A 45 DB 04
+       double data hash MD5: 8K
+       5B 7B 9C C5 BE 58 2A 68 A6 53 88 5E 1F B4 EA D4>)
+( 189,<2023-01-12 14:41:11.895 +0100>,<ead17>,<CZC1249Y8X>,<dirdata>,<TopSpin 4.1.3>,
+      <wrpa from 1 4 "8Carbios_ICCG_exchange" "/opt/nmrdata/data/ead17/2023"
+       double data hash MD5: 8K
+       5B 7B 9C C5 BE 58 2A 68 A6 53 88 5E 1F B4 EA D4>)
+$$ /opt/nmrdata/data/ead17/2023/8Carbios_ICCG_exchange/1004/audita.txt
+( 190,<2023-01-12 14:50:58.560 +0100>,<ead17>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 191,<2023-01-12 14:50:58.779 +0100>,<ead17>,<CZC1249Y8X>,<dataserver>,<TopSpin 4.1.3>,
+      <>)
+( 192,<2023-01-12 13:51:00.657 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <raw data deleted by zg>)
+( 193,<2023-01-12 13:51:00.661 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <acquisition in progress>)
+( 194,<2023-01-12 13:51:18.886 +0000>,<ead17>,<CZC1249Y8X>,<go4>,<TopSpin 4.1.3>,
+      <created by zg on 'Avance' (CZC1249Y8X) by user 'ead17'
+       on data set with UUID '25b9c446-9280-11ed-939f-0030d628fa8a'
+       started at 2023-01-12 13:51:00.677 +0000, POWCHK enabled, PULCHK disabled,
+       completed at 2023-01-12 13:51:18.885 +0000
+       configuration hash MD5:
+       32 63 9E 4E 09 21 69 DB A5 E3 4F 2A 8A 45 DB 04
+       double data hash MD5: 8K
+       DF 76 50 2B 27 18 DD 32 31 95 2B 70 1B A8 01 FA>)
+( 195,<2023-01-26 09:42:59.807 +0100>,<cyrilcharlier>,<Cyrils-MacBook-Pro-2.local>,<proc1d>,<TopSpin 4.0.8>,
+      <Start of raw data processing
+       qsin SSB = 3 SI = 16K 
+       data hash MD5: 16K
+       0E 0C 1A B8 6A 1C 64 10 CA EA 2C 96 B0 62 5F B5>)
+( 196,<2023-01-26 09:42:59.952 +0100>,<cyrilcharlier>,<Cyrils-MacBook-Pro-2.local>,<proc1d>,<TopSpin 4.0.8>,
+      <fp FT_mod = 6 PKNL = 1 SI = 16K PHC0 = -72.54276 PHC1 = -41.5093 
+       data hash MD5: 16K
+       45 9B 08 73 7B 8E 86 A1 CE 62 74 FC 10 01 2D 0E>)
+##END=
+
+$$ hash MD5
+$$ 49 9C CC 78 FB 79 87 BF 56 21 3A 42 8F 93 05 9A

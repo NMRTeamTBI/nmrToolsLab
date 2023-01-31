@@ -1,0 +1,126 @@
+;zggpw5
+;avance-version (20/06/25)
+;1D sequence
+;water suppression using watergate W5 pulse sequence with gradients
+;using double echo
+;
+;M. Liu, X. Mao, C. He, H. Huang, J.K. Nicholson & J.C. Lindon,
+;   J. Magn. Reson. 132, 125 - 129 (1998)
+;
+;$CLASS=HighRes
+;$DIM=1D
+;$TYPE=
+;$SUBTYPE=
+;$COMMENT=
+
+
+#include <Avance.incl>
+#include <Delay.incl>
+#include <Grad.incl>
+
+
+"TAU=p1*2/PI+de+4u"
+
+
+"acqt0=0"
+baseopt_echo
+
+
+1 ze
+2 30m
+  d1 
+  10u pl1:f1
+  50u UNBLKGRAD
+
+  p1 ph1
+
+  p16:gp1
+  d16 pl18:f1
+  p27*0.087 ph3
+  d19*2
+  p27*0.206 ph3
+  d19*2
+  p27*0.413 ph3
+  d19*2
+  p27*0.778 ph3
+  d19*2
+  p27*1.491 ph3
+  d19*2
+  p27*1.491 ph4
+  d19*2
+  p27*0.778 ph4
+  d19*2
+  p27*0.413 ph4
+  d19*2
+  p27*0.206 ph4
+  d19*2
+  p27*0.087 ph4
+  p16:gp1
+  d16
+
+  TAU
+
+  p16:gp2
+  d16
+  p27*0.087 ph5
+  d19*2
+  p27*0.206 ph5
+  d19*2
+  p27*0.413 ph5
+  d19*2
+  p27*0.778 ph5
+  d19*2
+  p27*1.491 ph5
+  d19*2
+  p27*1.491 ph6
+  d19*2
+  p27*0.778 ph6
+  d19*2
+  p27*0.413 ph6
+  d19*2
+  p27*0.206 ph6
+  d19*2
+  p27*0.087 ph6
+  p16:gp2
+  d16
+
+  4u BLKGRAD
+  go=2 ph31
+  30m mc #0 to 2 F0(zd)
+exit
+
+
+ph1=0 2
+ph3=0 0 1 1 2 2 3 3 
+ph4=2 2 3 3 0 0 1 1
+ph5=0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1
+    2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3
+ph6=2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3
+    0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1
+ph31=0 2 2 0 0 2 2 0 2 0 0 2 2 0 0 2
+
+
+;pl1 : f1 channel - power level for pulse (default)
+;pl18: f1 channel - power level for 3-9-19-pulse (watergate)
+;p1 : f1 channel -  90 degree high power pulse
+;p16: homospoil/gradient pulse
+;p27: f1 channel -  90 degree pulse at pl18
+;d1 : relaxation delay; 1-5 * T1
+;d16: delay for homospoil/gradient recovery
+;d19: delay for binomial water suppression
+;     d19 = (1/(2*d)), d = distance of next null (in Hz)
+;ns: 8 * n, total number of scans: NS * TD0
+;ds: 4
+
+
+;for z-only gradients:
+;gpz1: 34%
+;gpz2: 22%
+
+;use gradient files:
+;gpnam1: SMSQ10.100
+;gpnam2: SMSQ10.100
+
+
+
+;$Id:$
