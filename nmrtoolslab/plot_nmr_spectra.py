@@ -15,14 +15,7 @@ def read_topspin_data(
     data_path, 
     dataset, 
     expno, 
-    procno,
-    lowest_contour,
-    contour_factor,
-    n_contour,
-    linewitdh_plot,
-    plot_name=None, 
-    plot_color=None, 
-    spec_lim=None,
+    procno
     ):
 
     # get complete data path
@@ -39,6 +32,20 @@ def read_topspin_data(
     # get universal dictionnary
     udic = ng.bruker.guess_udic(dic,data)
 
+    return data, udic
+
+def plot_nmr_spectra(
+    data,
+    udic,
+    lowest_contour,
+    contour_factor,
+    n_contour,
+    linewitdh_plot,
+    plot_name=None, 
+    plot_color=None, 
+    spec_lim=None,
+    ):
+    #
     # put data into dataframe
     data = pd.DataFrame(data)
 

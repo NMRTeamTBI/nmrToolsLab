@@ -97,10 +97,10 @@ class sparky_list(object):
 
         # Obtain the residue type for each residue
         amino_acid_type = ["".join(self.split(self.peak_list.Assignment.iloc[i])[0]) for i in range(n_res) ]
- 
+
         self.peak_list['Assignment']  = amino_acid_assignment
         self.peak_list['Res_Type']    = amino_acid_type
-        
+
         exp_dimensions = self.split(self.peak_label)
 
         self.peak_list.rename(columns={
@@ -108,14 +108,15 @@ class sparky_list(object):
             'Res_Type':'res_type',
             'w1':'w_'+str(exp_dimensions[0]),
             'w2':'w_'+str(exp_dimensions[2]),
+
             },
               inplace=True)
 
         self.peak_list = self.peak_list.reset_index(drop=True).set_index(self.peak_list['Ass'])
 
         if 'Data' in self.peak_list.columns:
-            self.peak_list.rename(columns={'Data':'Height'},inplace=True)
             self.peak_list.drop(['Height'],axis=1,inplace=True)
+            self.peak_list.rename(columns={'Data':'Height'},inplace=True)
 
     def split(self,word): 
         return [char for char in word] 
@@ -210,17 +211,21 @@ class data_consolidation(object):
         self.data = data
         self.dim_data = dim_data
         self.data_type = data_type
-        self.res_list = []  
+        self.res_list = []
+          
 
         self.consolidated_data = False
 
-        if data_type == 'pH':
-            self.data_initialisaion_pH()
+        # if data_type == 'pH':
+        if data_type == 'time':
+             self.data_initialisaion_time()
+        else:
+            self.data_initialisaion()
 
     def split(self,word): 
         return [char for char in word] 
 
-    def data_initialisaion_pH(self):
+    def data_initialisaion(self):
         # Load a series of peak lists 
         for i in self.data.keys():
             pk_list = sparky_list(
@@ -239,14 +244,41 @@ class data_consolidation(object):
                 dim = list(self.data[i]['data'][self.data[i]['data'].Ass==res])[1:3]
                 for d in dim :
                     try:
+                        
                         peak_info = list(self.data[i]['data'][self.data[i]['data'].Ass==res].loc[:,['Ass',d,'res_type']].values[0])
-                        peak_info.insert(1,self.data[i]['pH'])
+                        peak_info.insert(1,self.data[i][self.data_type])
                         peak_info.insert(2,self.split(d)[2])
                         general_table.append(peak_info)
                     except:
                         pass
+        self.consolidated_data = pd.DataFrame(general_table,columns=['ass',self.data_type,'nucleus','shift','res_type'])
 
-        self.consolidated_data = pd.DataFrame(general_table,columns=['ass','pH','nucleus','shift','res_type'])
+    def data_initialisaion_time(self):
+        # Load a series of peak lists 
+        for i in self.data.keys():
+            pk_list = sparky_list(
+                self.data[i]['path'],
+                self.data[i]['exp'],
+                self.data[i]['peak_label'],
+                self.dim_data
+                )
+            self.data[i]['data'] = pk_list.peak_list
+            self.res_list.append(self.data[i]['data'].Ass.tolist())
+        self.res_list = list(set(list(itertools.chain(*self.res_list))))
+
+        general_table = []
+        for res in self.res_list:
+            for i in self.data.keys():
+                try:
+                    peak_info = list(self.data[i]['data'][self.data[i]['data'].Ass==res].loc[:,['Ass','res_type','Height']].values[0])
+                    peak_info.insert(1,self.data[i][self.data_type])
+                    # peak_info.insert(2,self.split(d)[2])
+                    general_table.append(peak_info)
+                except:
+                    pass
+
+        self.consolidated_data = pd.DataFrame(general_table,columns=['ass',self.data_type,'Height','res_type'])
+
 
 class pKA_fitting(object):
 
