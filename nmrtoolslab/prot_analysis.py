@@ -83,7 +83,7 @@ class sparky_list(object):
     def read_peaklist_2D(self):
 
         full_path = Path(self.path, str(self.list_name)+'.list')
-        
+        print(full_path)
         self.peak_list = pd.read_table(
         full_path,
         sep='\s+'
