@@ -5,6 +5,8 @@ from plotly.subplots import make_subplots
 import itertools
 from scipy.optimize import curve_fit, minimize
 from pathlib import Path
+from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
 
 
 class nmrpipe_file(object):
@@ -80,8 +82,10 @@ class sparky_list(object):
 
     def read_peaklist_2D(self):
 
+        full_path = Path(self.path, str(self.list_name)+'.list')
+        
         self.peak_list = pd.read_table(
-        str(self.path)+'/'+str(self.list_name)+'.list',
+        full_path,
         sep='\s+'
         )
 
@@ -270,7 +274,7 @@ class data_consolidation(object):
         for res in self.res_list:
             for i in self.data.keys():
                 try:
-                    peak_info = list(self.data[i]['data'][self.data[i]['data'].Ass==res].loc[:,['Ass','res_type','Height']].values[0])
+                    peak_info = list(self.data[i]['data'][self.data[i]['data'].Ass==res].loc[:,['Ass','Height','res_type']].values[0])
                     peak_info.insert(1,self.data[i][self.data_type])
                     # peak_info.insert(2,self.split(d)[2])
                     general_table.append(peak_info)
@@ -278,6 +282,70 @@ class data_consolidation(object):
                     pass
 
         self.consolidated_data = pd.DataFrame(general_table,columns=['ass',self.data_type,'Height','res_type'])
+
+class time_fitting(object):
+    def __init__(self,data,res, normalized=False):
+        self.data = data 
+        self.res = res
+        self.normalized = normalized
+
+        self.params = []
+
+        self.intensities = []
+        self.time_pts = []
+
+        self.data_selection()
+
+
+    def data_selection(self):
+        selected_data = self.data[self.data.ass==self.res]
+
+        self.time_pts =  selected_data.loc[:,'time']
+        
+        if self.normalized is True:
+            self.intensities = selected_data.loc[:,'Height']/selected_data.loc[:,'Height'].iloc[0]
+        else:
+            self.intensities = selected_data.loc[:,'Height']
+
+    def exp_model(self,a,b,c,t):
+        return a * np.exp(-b * t) +c
+
+    def fit(self):
+
+        popt, pcov = curve_fit(lambda t, a, b, c: self.exp_model(a,b,c,t), self.time_pts, self.intensities)
+        self.params = popt
+
+    def plot(self, fit: bool = False):
+        
+        fig = plt.figure()
+
+        #Experimental data
+        plt.plot(
+            self.time_pts,
+            self.intensities, 
+            ls='none',
+            marker='o',
+            color="b"
+            )
+
+        #Fitted Curve
+        if fit:
+            time_sim = np.linspace(0,max(self.time_pts)+1,100)    
+            simulated_curve = self.exp_model(self.params[0],self.params[1],self.params[2],time_sim)
+
+            plt.plot(
+                time_sim, 
+                simulated_curve, 
+                ls='-', 
+                color="r"
+                )
+        plt.ylabel(r'I/I$_{0}$')
+        plt.xlabel('time (hours)')
+        plt.title(self.res)
+        plt.ylim(0,1.3)
+
+        return fig
+
 
 
 class pKA_fitting(object):
@@ -480,7 +548,6 @@ class pKA_fitting(object):
         self.params['opt'] = self.fit_res.x
         self.params['opt_sd'] = standard_deviations
  
-
     def plot(self, res, fit: bool = False):
         
         if len(self.nuclei) == 2:
