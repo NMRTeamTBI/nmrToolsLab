@@ -10,7 +10,6 @@ def cm2inch(*tupl):
     else:
         return tuple(i/inch for i in tupl)
         
-
 def read_topspin_data(
     data_path, 
     dataset, 

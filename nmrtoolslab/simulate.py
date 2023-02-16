@@ -14,9 +14,9 @@ class simulation_spectrum(object):
 
         self.data = []
         self.udic = []
-        self.simulation_shiftX()
+        self.spectrum_simulation()
 
-    def simulation_shiftX(self):
+    def spectrum_simulation(self):
         gamma = {
             'H' :  1.0,                #'H1' 
             'C' :  0.251449530,        #'C13'
