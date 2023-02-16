@@ -19,7 +19,7 @@ def read_topspin_data(
     ):
 
     # get complete data path
-    full_path = Path(data_path, dataset, expno, 'pdata', procno)
+    full_path = Path(data_path, dataset, str(expno), 'pdata', str(procno))
 
     # read processed data
     dic, data = ng.bruker.read_pdata(str(full_path), 
@@ -37,10 +37,10 @@ def read_topspin_data(
 def plot_nmr_spectra(
     data,
     udic,
-    lowest_contour,
-    contour_factor,
-    n_contour,
-    linewitdh_plot,
+    lowest_contour=False,
+    contour_factor=False,
+    n_contour=False,
+    linewitdh_plot=False,
     plot_name=None, 
     plot_color=None, 
     spec_lim=None,
