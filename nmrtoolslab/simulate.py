@@ -4,13 +4,14 @@ import matplotlib.pyplot as plt
 
 class simulation_spectrum(object):
 
-    def __init__(self,spec_type,field,sweep_width,carrier,peak_list,format=True):
+    def __init__(self,spec_type,field,sweep_width,carrier,peak_list,sparky_name=False,format=True):
         self.spec_type      = spec_type
         self.field          = field
         self.sweep_width    = sweep_width
         self.carrier        = carrier
         self.peak_list      = peak_list
         self.format         = format
+        self.sparky_name    = sparky_name
 
         self.data = []
         self.udic = []
@@ -69,6 +70,7 @@ class simulation_spectrum(object):
         self.data = np.empty(shape, dtype='float32')
 
         npeaks = len(self.peak_list)
+
         # if self.format == 'sparky':
         #     # convert the peak list from PPM to points
         uc_objects = [ng.sparky.make_uc(dic, None, i) for i in range(n_dim)]
@@ -95,8 +97,14 @@ class simulation_spectrum(object):
 
         # simulate the spectrum
         amps = [1e6] * len(self.peak_list)
-        
         self.data = ng.linesh.sim_NDregion(shape, lineshape, params, amps)
 
+        if self.format == 'sparky':
+            if self.sparky_name is False:
+                file_name = 'test'
+            else:
+                file_name = self.sparky_name
+
+            ng.sparky.write(str(file_name)+".ucsf", dic, self.data.astype('float32'), overwrite=True)
 
 

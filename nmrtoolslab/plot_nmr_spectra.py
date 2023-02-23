@@ -10,29 +10,6 @@ def cm2inch(*tupl):
     else:
         return tuple(i/inch for i in tupl)
         
-def read_topspin_data(
-    data_path, 
-    dataset, 
-    expno, 
-    procno
-    ):
-
-    # get complete data path
-    full_path = Path(data_path, dataset, str(expno), 'pdata', str(procno))
-
-    # read processed data
-    dic, data = ng.bruker.read_pdata(str(full_path), 
-        read_procs=True, 
-        read_acqus=False, 
-        #scale_data=True, 
-        #all_components=False
-        )
-
-    # get universal dictionnary
-    udic = ng.bruker.guess_udic(dic,data)
-
-    return data, udic
-
 def plot_nmr_spectra(
     data,
     udic,
