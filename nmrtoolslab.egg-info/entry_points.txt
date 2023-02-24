@@ -1,2 +1,2 @@
 [console_scripts]
-physiofit = nmrtoolslab.__main__:main
+nmrtoolslab = nmrtoolslab.__main__:main
