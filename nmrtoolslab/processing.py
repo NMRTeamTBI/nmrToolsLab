@@ -99,11 +99,16 @@ class baseline_correction(object):
         self.poly_order = poly_order
         self.data_bl    = False
         self.baseline   = {}
+
         self.initialize_spec_list()
 
-        if base_type == 'poly':
-            self.data_bl = self.data.copy()
-            self.polynomial_baseline_correction()
+        self.n_dim = self.data.ndim
+
+        if base_type == 'lin':
+            self.poly_order = 1
+
+
+        self.polynomial_baseline_correction()
 
     def initialize_spec_list(self):
         if self.spec_list is False:   
@@ -128,67 +133,83 @@ class baseline_correction(object):
             Array of base line corrected NMR data.
 
         """
+        self.data_bl = self.data.copy()
 
         x = np.arange(min(self.spec_wdw),max(self.spec_wdw),1)
         baseline_fitter = Baseline(x_data=x)
         self.baseline['x'] = x
 
-        for s in self.spec_list:
-            data_region = self.data[s,min(self.spec_wdw):max(self.spec_wdw)]
+        if self.n_dim == 2:
+            for s in self.spec_list:
+                data_region = self.data[s,min(self.spec_wdw):max(self.spec_wdw)]
 
-            baseline = baseline_fitter.imodpoly(data_region, poly_order=self.poly_order, num_std=0.7)[0]
-            self.baseline[s] = baseline
-            self.data_bl[s,min(self.spec_wdw):max(self.spec_wdw)] = data_region - baseline
+                baseline = baseline_fitter.imodpoly(data_region, poly_order=self.poly_order, num_std=0.7)[0]
+                self.baseline[s] = baseline
+                self.data_bl[s,min(self.spec_wdw):max(self.spec_wdw)] = data_region - baseline
+        if self.n_dim == 1:
+                data_region = self.data[min(self.spec_wdw):max(self.spec_wdw)]
+
+                baseline = baseline_fitter.imodpoly(data_region, poly_order=self.poly_order, num_std=0.7)[0]
+                self.baseline[1] = baseline
+                self.data_bl[min(self.spec_wdw):max(self.spec_wdw)] = data_region - baseline
 
     def visualize_baseline_correction(self,s, baseline_correction=False):
         # ,show_all=False
-        fig, ax = plt.subplots(1,1, figsize=(10,3))
-
+        fig, ax = plt.subplots(1,1, figsize=(10,4))
         x_plot = self.baseline['x']
-        ax.plot(x_plot,self.data[s,min(self.spec_wdw):max(self.spec_wdw)])
 
-        if baseline_correction is True:
-            ax.plot(x_plot,self.baseline[s])
-            ax.plot(x_plot,self.data_bl[s,min(self.spec_wdw):max(self.spec_wdw)])
-        ax.spines[['top', 'left', 'right']].set_visible(False)
-        ax.tick_params(labelleft=False, left=False)
+        if self.n_dim == 2:
+            ax.plot(x_plot,self.data[s,min(self.spec_wdw):max(self.spec_wdw)],c='b',label='raw data')
+            if baseline_correction is True:
+                ax.plot(x_plot,self.baseline[s],c='g',label='baseline')
+                ax.plot(x_plot,self.data_bl[s,min(self.spec_wdw):max(self.spec_wdw)],c='r',label='corrected')
+        if self.n_dim == 1:
+            ax.plot(x_plot,self.data[min(self.spec_wdw):max(self.spec_wdw)],c='b',label='raw data')
+            if baseline_correction is True:
+                ax.plot(x_plot,self.baseline[1],c='g',label='baseline')
+                ax.plot(x_plot,self.data_bl[min(self.spec_wdw):max(self.spec_wdw)],c='r',label='corrected')
+
+
+        ax.legend()
+        ax.grid(axis = 'y')
+        ax.spines[['top', 'right']].set_visible(False)
         ax.set_xlabel('pts')
 
-def linear_baseline_correction(data,nl,spec_list=False):
-    """
-    Loading bruker NMR data
+# def linear_baseline_correction(data,nl,spec_list=False):
+#     """
+#     Loading bruker NMR data
 
-    Parameters
-    __________
-    data : 1D or 2D ndarray 
-        Array pseudo-2D NMR data.
-    nl: list
-        List of baseline nodes.
+#     Parameters
+#     __________
+#     data : 1D or 2D ndarray 
+#         Array pseudo-2D NMR data.
+#     nl: list
+#         List of baseline nodes.
 
-    Return
-    __________
-    data_sum : 2D ndarray
-        Array of base line corrected NMR data.
+#     Return
+#     __________
+#     data_sum : 2D ndarray
+#         Array of base line corrected NMR data.
 
-    """
+#     """
 
-    if spec_list is False:     
-        data_bl = ng.process.proc_bl.base(data,nl)
-    else:
-        data_bl = data
-        if type(spec_list) is int:
-            s = spec_list
-            data_bl[s] = ng.process.proc_bl.base(data[s],nl)
+#     if spec_list is False:     
+#         data_bl = ng.process.proc_bl.base(data,nl)
+#     else:
+#         data_bl = data
+#         if type(spec_list) is int:
+#             s = spec_list
+#             data_bl[s] = ng.process.proc_bl.base(data[s],nl)
 
-        if type(spec_list) is list and len(spec_list) == 1:
-            s = spec_list[0]
-            data_bl[s] = ng.process.proc_bl.base(data[s],nl)
+#         if type(spec_list) is list and len(spec_list) == 1:
+#             s = spec_list[0]
+#             data_bl[s] = ng.process.proc_bl.base(data[s],nl)
 
-        if type(spec_list) is list and len(spec_list) != 1:
-            s = spec_list
-            data_bl[s,:] = ng.process.proc_bl.base(data[s,:],nl)
+#         if type(spec_list) is list and len(spec_list) != 1:
+#             s = spec_list
+#             data_bl[s,:] = ng.process.proc_bl.base(data[s,:],nl)
 
-    return data_bl
+#     return data_bl
 
 
 

@@ -347,8 +347,6 @@ class time_fitting(object):
 
         return fig
 
-
-
 class pKA_fitting(object):
 
     def __init__(self,data,res, nuclei, model,new_params=False):
