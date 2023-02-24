@@ -153,7 +153,7 @@ class baseline_correction(object):
                 self.baseline[1] = baseline
                 self.data_bl[min(self.spec_wdw):max(self.spec_wdw)] = data_region - baseline
 
-    def visualize_baseline_correction(self,s, baseline_correction=False):
+    def visualize_baseline_correction(self,s=False, baseline_correction=False):
         # ,show_all=False
         fig, ax = plt.subplots(1,1, figsize=(10,4))
         x_plot = self.baseline['x']
