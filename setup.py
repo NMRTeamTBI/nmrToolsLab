@@ -1,4 +1,4 @@
-from setuptools
+import setuptools
 import re
 
 # Version is maintained in the __init__.py file
