@@ -38,7 +38,7 @@ def read_topspin_data(data_path, dataset, expno, procno):
     dic, data = ng.bruker.read_pdata(str(full_path), 
         read_procs=True, 
         read_acqus=False, 
-        scale_data=False, 
+        scale_data=True, 
         all_components=False
         )
 
