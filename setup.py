@@ -19,7 +19,7 @@ setuptools.setup(
     url="https://github.com/NMRTeamTBI/nmrToolsLab",
     packages=setuptools.find_packages(),
     python_requires='>=3.5',
-    install_requires=['pandas>=0.17.1', 'scipy>=0.12.1', 'nmrglue>=0.6', 'numpy>=1.14.0', 'plotly'],
+    install_requires=['pandas>=0.17.1', 'scipy>=0.12.1', 'nmrglue>=0.6', 'numpy>=1.14.0', 'plotly', 'pybaselines>=1.0.0', 'biopandas'],
     package_data={'': ['data/*.png', ], },
     include_package_data=True,
     classifiers=[
@@ -34,12 +34,3 @@ setuptools.setup(
         "Topic :: Scientific/Engineering :: Bio-Informatics",
         ]
 )
-
-    # pandas>=0.17.1
-    # scipy>=0.12.1
-    # nmrglue>=0.6
-    # matplotlib >= 3.5.2
-    # numpy>=1.14.0
-    # plotly
-    # biopandas
-    # pybaselines
