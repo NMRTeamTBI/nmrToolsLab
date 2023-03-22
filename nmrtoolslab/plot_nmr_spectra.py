@@ -20,6 +20,7 @@ def plot_nmr_spectra(
     plot_name=None, 
     plot_color=None, 
     spec_lim=None,
+    rotate=False,
     ):
     #
     # put data into dataframe
@@ -90,15 +91,29 @@ def plot_nmr_spectra(
             )
 
     if ndim == 1:
-        plot_name.plot(
-        ppm_window[0]['ppm'],
-        data,
-        color = plot_color,
-        linewidth=linewitdh_plot
-        )
-
-        plot_name.set_xlim(                                                      
-            left    = max(ppm_window[0]['ppm']),                                      
-            right   = min(ppm_window[0]['ppm'])                                       
+        if rotate == False:
+            plot_name.plot(
+            ppm_window[0]['ppm'],
+            data,
+            color = plot_color,
+            linewidth=linewitdh_plot
             )
-        plot_name.set_xlabel(r'$^{'+str(ppm_window[0]['label'][0])+'}$'+str(ppm_window[0]['label'][1])+ ' (ppm)')
+
+            plot_name.set_xlim(                                                      
+                left    = max(ppm_window[0]['ppm']),                                      
+                right   = min(ppm_window[0]['ppm'])                                       
+                )
+            plot_name.set_xlabel(r'$^{'+str(ppm_window[0]['label'][0])+'}$'+str(ppm_window[0]['label'][1])+ ' (ppm)')
+        if rotate == True:
+            plot_name.plot(
+            data,
+            ppm_window[0]['ppm'],
+            color = plot_color,
+            linewidth=linewitdh_plot
+            )
+
+            plot_name.set_ylim(                                                      
+                bottom    = max(ppm_window[0]['ppm']),                                      
+                top   = min(ppm_window[0]['ppm'])                                       
+                )
+            plot_name.set_ylabel(r'$^{'+str(ppm_window[0]['label'][0])+'}$'+str(ppm_window[0]['label'][1])+ ' (ppm)')

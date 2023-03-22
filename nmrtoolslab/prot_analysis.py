@@ -1,4 +1,6 @@
 import pandas as pd
+from io import StringIO
+import pynmrstar
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -8,7 +10,105 @@ from pathlib import Path
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 
+three_to_one = {
+    'CYS': 'C',
+    'ASP': 'D',
+    'SEP': 'S',
+    'SER': 'S',
+    'GLN': 'Q',
+    'LYS': 'K',
+    'PRO': 'P',
+    'THR': 'T',
+    'PHE': 'F',
+    'ALA': 'A',
+    'HIS': 'H',
+    'GLY': 'G',
+    'ILE': 'I',
+    'GLU': 'E',
+    'LEU': 'L',
+    'ARG': 'R',
+    'TRP': 'W',
+    'VAL': 'V',
+    'ASN': 'N',
+    'TYR': 'Y',
+    'MET': 'M'
+}
 
+class import_bmrb(object):
+    def __init__(self,bmrb_entry,nuclei,offset=False):
+        self.bmrb_entry = bmrb_entry
+        self.nuclei = nuclei
+        self.offset = offset
+        self.bmrb_df = False
+        self.shifts = False
+        self.shifts_to_sim = False
+
+        self.import_bmrb()
+        if nuclei in ['HN','NH']:
+            self.bmrb_to_dataframe_HN()
+            self.bmrb_to_simulate_HN()
+
+    def import_bmrb(self):
+    # Import a bmrb file using direcly the bmrb is entry
+    # file_name =f'{bmrb_id}.bmrb.pkl'
+
+        entry = pynmrstar.Entry.from_database(self.bmrb_entry)
+        shifts = entry.get_loops_by_category("Atom_chem_shift")[0]
+        shifts_csv = shifts.get_data_as_csv()
+        self.bmrb_df = pd.read_csv(StringIO(shifts_csv))
+
+        self.bmrb_df = self.bmrb_df[[
+            '_Atom_chem_shift.Seq_ID',
+            '_Atom_chem_shift.Atom_ID',
+            '_Atom_chem_shift.Comp_ID',
+            '_Atom_chem_shift.Atom_type',
+            '_Atom_chem_shift.Val',
+            '_Atom_chem_shift.Val_err',
+            ]]
+        self.bmrb_df.rename(columns={
+            '_Atom_chem_shift.Seq_ID'       :'res',
+            '_Atom_chem_shift.Atom_ID'      :'type',
+            '_Atom_chem_shift.Comp_ID'      :'res_type',
+            '_Atom_chem_shift.Atom_type'    :'atom',
+            '_Atom_chem_shift.Val'          :'w',
+            '_Atom_chem_shift.Val_err'      :'w_err',
+        },inplace=True)
+
+    def bmrb_to_dataframe_HN(self):
+        _HN_shifts = self.bmrb_df[
+        (self.bmrb_df['atom']=='H') &
+        (self.bmrb_df['type']=='H')
+        ]
+        _N_shifts = self.bmrb_df[
+        (self.bmrb_df['atom']=='N') &
+        (self.bmrb_df['type']=='N')
+        ]
+        # for i in range(len(_PeakList)):
+        #     _PeakList['res_type'].iloc[i] = three_to_one[_PeakList['res_type'].iloc[i]]
+        res_list = list(set(_N_shifts['res'])&set(_HN_shifts['res']))
+        All_Shifts = []
+        for res in res_list:
+            HShifts = _HN_shifts[_HN_shifts['res']==res]['w'].values[0]
+            NShifts = _N_shifts[_N_shifts['res']==res]['w'].values[0]
+            res_type = three_to_one[_N_shifts[_N_shifts['res']==res]['res_type'].values[0]]
+            All_Shifts.append([res,res_type,NShifts,HShifts])
+        self.shifts = pd.DataFrame(All_Shifts,columns=['Ass','ResType','15N','1H'])
+
+    def bmrb_to_simulate_HN(self):
+        if self.offset is False:
+            self.offset = {'1H':0,'15N':0}
+        
+        tmp = []
+        res_list = self.shifts.Ass
+        for r in res_list:
+            tmp.append([
+                r,
+                self.shifts[self.shifts.Ass==r].loc[:,'1H'].values[0]+self.offset['1H'],
+                self.shifts[self.shifts.Ass==r].loc[:,'15N'].values[0]+self.offset['15N']
+            ])
+
+        self.shifts_to_sim = pd.DataFrame(tmp,columns=['res','1H','15N'])
+    
 class nmrpipe_file(object):
     def __init__(self,path,file_name,time_step,Exp=False):
         self.path = path
@@ -296,7 +396,6 @@ class time_fitting(object):
         self.time_pts = []
 
         self.data_selection()
-
 
     def data_selection(self):
         selected_data = self.data[self.data.ass==self.res]
@@ -593,4 +692,49 @@ class pKA_fitting(object):
         #     )
 
         return fig_full
+    
+    def plot_matplotlib(self, res, fit: bool = False):
+        
+        fig, ax1 = plt.subplots()
+        if len(self.nuclei) == 2:
+            ax2 = ax1.twinx()
 
+        
+        data_res = self.selected_data[self.selected_data.ass == res]
+
+        ## ---  First nucleus 
+        #Experimental data
+        data_res_nucleus = data_res[data_res.nucleus==self.nuclei[0]]
+        ax1.plot(data_res_nucleus.loc[:,'pH'],data_res_nucleus.loc[:,'shift'], marker='o',ls='none',color="blue")
+        # print(list(data_res_nucleus.loc[:,'nucleus'])[0])
+        ax1.set_ylabel(str(list(data_res_nucleus.loc[:,'nucleus'])[0])+' (ppm)',color='blue')
+        ax1.set_xlabel('pH')
+        ax1.tick_params(axis ='y', labelcolor = 'blue')
+
+        #Fitted Curve
+        if fit:
+            pH_all = np.linspace(min(data_res_nucleus.loc[:,'pH'])-0.2,max(data_res_nucleus.loc[:,'pH'])+0.2,100)    
+            simulated_curve = self.func(pH_all,self.fit_par[res][self.nuclei[0]])
+            ax1.plot(pH_all, simulated_curve, color="blue")
+
+        ## ---  Second nucleus only if it exists
+        #Experimental data
+        if len(self.nuclei) == 2:
+            data_res_nucleus = data_res[data_res.nucleus==self.nuclei[1]]
+            ax2.plot(data_res_nucleus.loc[:,'pH'],data_res_nucleus.loc[:,'shift'],marker='o',ls='none',color="red")
+            ax2.set_ylabel(str(list(data_res_nucleus.loc[:,'nucleus'])[0])+' (ppm)',color='red')
+            ax2.tick_params(axis ='y', labelcolor = 'red')
+        #Fitted Curve
+            if fit:
+                pH_all = np.linspace(min(data_res_nucleus.loc[:,'pH'])-0.2,max(data_res_nucleus.loc[:,'pH'])+0.2,100)    
+                simulated_curve = self.func(pH_all,self.fit_par[res][self.nuclei[1]])
+                ax2.plot(pH_all, simulated_curve, color="red")
+
+
+        # fig.update_layout(
+        #     title="",
+        #     xaxis_title="pH",
+        #     yaxis_title="CC",
+        #     legend_title="Legend Title",
+        #     )
+        return fig

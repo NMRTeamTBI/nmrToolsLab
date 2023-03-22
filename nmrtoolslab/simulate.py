@@ -2,6 +2,7 @@ import nmrglue as ng
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class simulation_spectrum(object):
 
     def __init__(self,spec_type,field,sweep_width,carrier,peak_list,sparky_name=False,format=True):
