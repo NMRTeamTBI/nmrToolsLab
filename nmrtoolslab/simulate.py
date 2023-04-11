@@ -1,7 +1,8 @@
 import nmrglue as ng
 import numpy as np
 import matplotlib.pyplot as plt
-
+from scipy.linalg import expm
+from scipy.sparse.linalg import expm_multiply
 
 class simulation_spectrum(object):
 
@@ -108,4 +109,81 @@ class simulation_spectrum(object):
 
             ng.sparky.write(str(file_name)+".ucsf", dic, self.data.astype('float32'), overwrite=True)
 
+class exchange_simulation(object):
+    def __init__(self,params):
+        self.params     =   params
+        self.fid_signal =   False
+        self.fid_time   =   False        
+        self.n_states   =   self.params['n_states']
+        self.sw         =   self.params['sw']
+        self.td         =   self.params['td']
+        self.B0         =   self.params['B0']
+
+        self.dw = 1/(2*self.sw*self.B0) 
+        self.fid_time = np.arange(0,self.td*self.dw,self.dw)
+        print(self.td*self.dw)
+        if self.n_states == 2:
+            self.two_site_exchange_simulation()
+
+    def two_site_exchange_simulation(self):
+        # population 
+        pa = self.params['pa']
+        # Exchange ratess
+        kex = self.params['kex']
+        # Bo field in MHz
+        
+        # Chemical shifts of both states A and B
+        shifts_a = self.params['shifts_a']
+        shifts_b = self.params['shifts_b']
+
+        # R1 rates 
+        R1_rates = self.params['R1_rates']
+        if len(R1_rates) == 1:
+            R1a = R1b = R1_rates[0]
+        if len(R1_rates) == 2:
+            R1a = R1_rates[0]
+            R1b = R1_rates[1]
+
+        # R1 rates 
+        R2_rates = self.params['R2_rates']
+        if len(R2_rates) == 1:
+            R2a = R2b = R2_rates[0]
+        if len(R2_rates) == 2:
+            R2a = R2_rates[0]
+            R2b = R2_rates[1]
+
+        pb = 1 - pa
+        kba = pa * kex
+        kab = pb * kex
+
+        wa = self.B0*2*np.pi*shifts_a
+        wb = self.B0*2*np.pi*shifts_b
+
+        H = np.asarray([
+        [0,    0, 0, 0, 0, 0, 0], #E
+        [0,    -R2a-kab,-wa,0,kba,0,0], #Max
+        [0,    wa  ,-R2a-kab,0,0,kba,0], #May
+        [2*R1a*pa,0,0,-R1a-kab,0,0,kba], #Maz
+        [0,kab,0,0,-R2b-kba,-wb,0], #Mbx
+        [0,0,kab,0,wb,-R2b-kba,0], #Mby
+        [2*R1b*pb,0,0,kab,0,0,-R1b-kba] #Mbz
+         ])
+
+        M0 = np.array([[0.5, 0.0, 0.0, pa, 0.0, 0.0, pb ]]).T
+
+        # blochmat = H*d1
+        M = np.dot(expm(H),M0)
+
+        # 90 pulse
+        M[1], M[3] = M[3], -M[1]
+        M[4], M[6] = M[6], -M[4]
+
+        # aq = self.td/(2*self.sw*B0) 
+        
+        
+
+        M = expm_multiply(H, M, start=0, stop=self.td*self.dw, num=self.td).transpose(0,2,1)
+        detection_vector = np.array([0, 1, 1j, 0, 1, 1j, 0])
+        self.signal = np.dot(M, detection_vector).reshape(-1)
+        
 

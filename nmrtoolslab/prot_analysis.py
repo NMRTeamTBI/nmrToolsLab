@@ -9,6 +9,7 @@ from scipy.optimize import curve_fit, minimize
 from pathlib import Path
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
+import os 
 
 three_to_one = {
     'CYS': 'C',
@@ -228,9 +229,11 @@ class sparky_list(object):
 
 class csp_calculation(object):
 
-    def __init__(self, peak_list_1, peak_list_2):
-        self.peak_list_1 = peak_list_1
-        self.peak_list_2 = peak_list_2
+    def __init__(self, set_data_1, set_data_2,w1,w2):
+        self.set_data_1 =   set_data_1
+        self.set_data_2 =   set_data_2
+        self.w1         =   w1
+        self.w2         =   w2
 
         self.gamma = {
             'H' :  1.0,                #'H1' 
@@ -243,81 +246,71 @@ class csp_calculation(object):
         self.csp_values = False
         self.csp_calculation()
 
-    def split(self,word): 
-        return [char for char in word] 
+    # def split(self,word): 
+    #     return [char for char in word] 
 
     def csp_calculation(self):
         """Calculate Detla_omegas and CSP between two peak lists.
         
         Returns:
-            dataframe: ass, dw_w1, dw_W2, csp
+            dataframe: ass, dw_w1, dw_W2, csp, res_type
         """
 
-        # read both column names to obtain nuclei
-        self.exp_dim_1 = list(self.peak_list_1.keys())[1:3]
-        self.exp_dim_2 = list(self.peak_list_2.keys())[1:3]
-        
-        # Check that both list contains the same nuclei
-        if self.exp_dim_1 == self.exp_dim_2:
-            pass
-        else:
-            print('hello')
-        # get gamma value according to the nucleus
-        if self.exp_dim_1[0] == 'w_N':
-            alpha = self.gamma['N']
-        if self.exp_dim_1[0] == 'w_C':
-            alpha = self.gamma['C']
+        alpha = self.gamma[self.w2]
 
-        # select residues that are present in both peak list
-        common_peak_list = set(list(self.peak_list_1.Ass)).intersection(list(self.peak_list_2.Ass))
+        # get common peak list 
+        common_reslist = list(set(self.set_data_1.ass.values.tolist()).intersection(self.set_data_2.ass.values.tolist()))
+        print(common_reslist)
+        results = []
+        for i in range(len(common_reslist)):
 
-        peak_list_1_sel = self.peak_list_1.loc[self.peak_list_1['Ass'].isin(common_peak_list)]
-        peak_list_2_sel = self.peak_list_2.loc[self.peak_list_2['Ass'].isin(common_peak_list)]
+            data_1 = self.set_data_1[self.set_data_1.ass==common_reslist[i]]
+            data_2 = self.set_data_2[self.set_data_2.ass==common_reslist[i]]
+    
+            delta_w1 = data_1[data_1.nucleus==self.w1].iloc[0].loc['shift']-data_2[data_2.nucleus==self.w1].iloc[0].loc['shift']
+            delta_w2 = data_1[data_1.nucleus==self.w2].iloc[0].loc['shift']-data_2[data_2.nucleus==self.w2].iloc[0].loc['shift']
 
-        delta_w1 = peak_list_1_sel.loc[:,self.exp_dim_1[0]]-peak_list_2_sel.loc[:,self.exp_dim_1[0]]
-        delta_w2 = peak_list_1_sel.loc[:,self.exp_dim_1[1]]-peak_list_2_sel.loc[:,self.exp_dim_1[1]]
+            CSP = np.sqrt((delta_w1)**2+alpha*(delta_w2)**2)
 
-        CSP = np.sqrt((delta_w2)**2+alpha*(delta_w1)**2)
-        
-        self.csp_values = pd.DataFrame()
-        self.csp_values['delta_'+str(self.exp_dim_1[0])] = delta_w1
-        self.csp_values['dela_'+str(self.exp_dim_1[1])] = delta_w2
-        self.csp_values['csp'] = CSP
-        self.csp_values['res_type'] = peak_list_1_sel.res_type
+            res_type = data_1[data_1.nucleus==self.w1].iloc[0].loc['res_type']
+            results.append([common_reslist[i],delta_w1,delta_w2,CSP,res_type])
+        self.csp_values = pd.DataFrame(results,columns=['ass','delta_w'+str(self.w1),'delta_w'+str(self.w2),'csp','res_type'])
+        self.csp_values=self.csp_values.round(4)
 
-    def plot(self, title=False):
+    def csp_plot(self, plot=False):
         """Plot experimental CSP
         Args:
 
         Returns: 
             go.Figure: plotly figure
         """
-        
-        fig = go.Figure(data=go.Bar(
-            x=self.csp_values.index,
-            y=self.csp_values.csp
-            ))
-        fig.update_layout(
-            title="Combined CSP {%s,%s}" % (self.exp_dim_1[0],self.exp_dim_1[1]) if title is False else title,
-            xaxis_title="residue number",
-            yaxis_title="CSP",
-            legend_title="Legend Title",
-            )
-        fig.update_layout(xaxis_range=[min(self.csp_values.index.values)-2,max(self.csp_values.index.values)+2])
+        if plot is False:
+            fig, ax = plt.subplots(1, 1)
+            fig.set_size_inches(12, 4)
 
+        ax.bar(self.csp_values.ass,self.csp_values.csp,color='darkblue')
+        ax.set_xlim(left=min(self.csp_values.ass)-2,right=max(self.csp_values.ass)+2)
+        ax.set_xlabel("residue number")
+        ax.set_ylabel('CSP (ppm)')
         return fig
+
+    def csp_to_pdb(self,full_reslist,path,file_name):
+        new_df = pd.DataFrame({'ass':full_reslist})
+        new_df = new_df.merge(self.csp_values, on='ass', how='left')
+        
+        new_df[['ass','csp']].to_csv(os.path.join(path,str(file_name)+'.txt'),sep='\t',na_rep=0,index=False)
 
 class data_consolidation(object):
     """This class 
 
     Args: (dic): input data as dictionnary that contains the data
     """
-    def __init__(self,data,dim_data,data_type):
+    def __init__(self,data,dim_data,data_type=False):
         self.data = data
         self.dim_data = dim_data
         self.data_type = data_type
         self.res_list = []
-          
+        
 
         self.consolidated_data = False
 
@@ -342,22 +335,27 @@ class data_consolidation(object):
             self.data[i]['data'] = pk_list.peak_list
             self.res_list.append(self.data[i]['data'].Ass.tolist())
         self.res_list = list(set(list(itertools.chain(*self.res_list))))
-
         general_table = []
+
         for res in self.res_list:
             for i in self.data.keys():
                 dim = list(self.data[i]['data'][self.data[i]['data'].Ass==res])[1:3]
                 for d in dim :
                     try:
-                        
                         peak_info = list(self.data[i]['data'][self.data[i]['data'].Ass==res].loc[:,['Ass',d,'res_type']].values[0])
-                        peak_info.insert(1,self.data[i][self.data_type])
-                        peak_info.insert(2,self.split(d)[2])
+                        for k in range(len(self.data_type)):
+                            peak_info.insert(1+k,self.data[i][self.data_type[k]])
+                        peak_info.insert(k+2,self.split(d)[2])
                         general_table.append(peak_info)
                     except:
                         pass
-        self.consolidated_data = pd.DataFrame(general_table,columns=['ass',self.data_type,'nucleus','shift','res_type'])
 
+        col_names = ['ass']
+        col_names.extend(list(self.data_type))
+        col_names.extend(['nucleus','shift','res_type'])
+
+        self.consolidated_data = pd.DataFrame(general_table,columns=col_names)
+  
     def data_initialisaion_time(self):
         # Load a series of peak lists 
         for i in self.data.keys():
