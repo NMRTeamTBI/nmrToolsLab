@@ -1,5 +1,5 @@
 import pandas as pd
-from pathlib import Path
+import numpy as np
 import nmrglue as ng
 import matplotlib.pyplot as plt
 
@@ -13,14 +13,16 @@ def cm2inch(*tupl):
 def plot_nmr_spectra(
     data,
     udic,
-    lowest_contour=False,
-    contour_factor=False,
-    n_contour=False,
-    linewitdh_plot=False,
-    plot_name=None, 
-    plot_color=None, 
-    spec_lim=None,
-    rotate=False,
+    lowest_contour  =   False,
+    contour_factor  =   False,
+    n_contour       =   False,
+    linewitdh_plot  =   False,
+    plot_name       =   None, 
+    plot_color      =   None, 
+    spec_lim        =   None,
+    rotate          =   False,
+    pseudo2D        =   False,
+    detla_time      =   False
     ):
     #
     # put data into dataframe
@@ -37,23 +39,38 @@ def plot_nmr_spectra(
     for k in range(ndim):
         uc_F = ng.fileiobase.uc_from_udic(udic, k)
         ppm = pd.Series(uc_F.ppm_scale())
-    
-        if spec_lim is not None:
-            mask = (ppm >= min(spec_lim[k][0],spec_lim[k][1])) & (ppm <= max(spec_lim[k][0],spec_lim[k][1]))
-            ppm = ppm[mask]
-            ppm_window[k]['mask'] = mask
-            ppm_window[k]['ppm'] = ppm
+
+        if pseudo2D is True:
+            if k == 0:
+                y_0 =  min(spec_lim[k][0],spec_lim[k][1])
+                y_1 =  max(spec_lim[k][0],spec_lim[k][1])
+                time_scale = np.arange(0,len(ppm)+1,1)*detla_time
+            if k == 1: #31P direct dimension
+                mask = (ppm >= min(spec_lim[k][0],spec_lim[k][1])) & (ppm <= max(spec_lim[k][0],spec_lim[k][1]))
+                ppm = ppm[mask]
+                ppm_window[k]['mask'] = mask
+                ppm_window[k]['ppm'] = ppm
         else:
-            ppm_window[k]['ppm'] = ppm
+            if spec_lim is not None:
+                mask = (ppm >= min(spec_lim[k][0],spec_lim[k][1])) & (ppm <= max(spec_lim[k][0],spec_lim[k][1]))
+                ppm = ppm[mask]
+                ppm_window[k]['mask'] = mask
+                ppm_window[k]['ppm'] = ppm
+            else:
+                ppm_window[k]['ppm'] = ppm
 
         label_info = [int(udic[k]['label'][:-1]),udic[k]['label'][-1]]             
         ppm_window[k]['label'] = label_info
 
-    if spec_lim is not None:
-        if ndim == 2:
-            data = data.loc[ppm_window[0]['mask'],ppm_window[1]['mask']] 
-        if ndim == 1:
-            data = data.loc[ppm_window[0]['mask']] 
+    if pseudo2D is True:
+        data = data.loc[y_0:y_1,ppm_window[1]['mask']] 
+        print(data)
+    else:
+        if spec_lim is not None:
+            if ndim == 2:
+                data = data.loc[ppm_window[0]['mask'],ppm_window[1]['mask']] 
+            if ndim == 1:
+                data = data.loc[ppm_window[0]['mask']] 
 
     # plot
     if plot_name is None:
@@ -73,12 +90,14 @@ def plot_nmr_spectra(
             extent=(
                 max(ppm_window[1]['ppm']),
                 min(ppm_window[1]['ppm']),
-                max(ppm_window[0]['ppm']),
-                min(ppm_window[0]['ppm'])
+                max(ppm_window[0]['ppm']) if pseudo2D is False else time_scale[y_0],
+                min(ppm_window[0]['ppm']) if pseudo2D is False else time_scale[y_1]
             )
         )
-
-        plot_name.set_ylabel(r'$^{'+str(ppm_window[0]['label'][0])+'}$'+str(ppm_window[0]['label'][1])+ ' (ppm)')        
+        if pseudo2D is True:
+            plot_name.set_ylabel('time')
+        else:
+            plot_name.set_ylabel(r'$^{'+str(ppm_window[0]['label'][0])+'}$'+str(ppm_window[0]['label'][1])+ ' (ppm)')        
         plot_name.set_xlabel(r'$^{'+str(ppm_window[1]['label'][0])+'}$'+str(ppm_window[1]['label'][1])+ ' (ppm)')        
 
         plot_name.set_xlim(                                                      
@@ -86,8 +105,8 @@ def plot_nmr_spectra(
             right   = min(ppm_window[1]['ppm'])                                       
             )
         plot_name.set_ylim(                                                      
-            bottom    = max(ppm_window[0]['ppm']),                                      
-            top   = min(ppm_window[0]['ppm'])                                       
+            bottom    =     max(ppm_window[0]['ppm']) if pseudo2D is False else time_scale[y_0],                                      
+            top       =     min(ppm_window[0]['ppm'])  if pseudo2D is False else time_scale[y_1]                                      
             )
 
     if ndim == 1:
