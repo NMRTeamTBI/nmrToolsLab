@@ -10,6 +10,7 @@ from pathlib import Path
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import os 
+import re
 
 three_to_one = {
     'CYS': 'C',
@@ -181,6 +182,8 @@ class sparky_list(object):
 
         if self.dimension == '2D':
             self.read_peaklist_2D()
+        if self.dimension in ['HNCA']:
+            self.read_peaklist_3D()
 
     def read_peaklist_2D(self):
 
@@ -207,13 +210,13 @@ class sparky_list(object):
         self.peak_list['Assignment']  = amino_acid_assignment
         self.peak_list['Res_Type']    = amino_acid_type
 
-        exp_dimensions = self.split(self.peak_label)
+        exp_dimensions = self.peak_label.split('-')#self.split(self.peak_label,'-')
 
         self.peak_list.rename(columns={
             'Assignment':'Ass',
             'Res_Type':'res_type',
             'w1':'w_'+str(exp_dimensions[0]),
-            'w2':'w_'+str(exp_dimensions[2]),
+            'w2':'w_'+str(exp_dimensions[1]),
 
             },
               inplace=True)
@@ -223,13 +226,95 @@ class sparky_list(object):
         if 'Data' in self.peak_list.columns:
             self.peak_list.drop(['Height'],axis=1,inplace=True)
             self.peak_list.rename(columns={'Data':'Height'},inplace=True)
+    
+    def read_peaklist_3D(self):
+        full_path = Path(self.path, str(self.list_name)+'.list')
+
+        self.peak_list = pd.read_table(
+        full_path,
+        sep='\s+'
+        )
+
+        # Clear values with ?
+        self.peak_list = self.peak_list[~self.peak_list.Assignment.str.contains("?", regex=False)]
+        self.peak_list = self.peak_list[~self.peak_list.Assignment.str.contains("X", regex=False)]
+       
+
+        if 'Data' in self.peak_list.columns:
+            self.peak_list.drop([ 'Data'], axis=1,inplace=True)
+
+        # PeakList.dropna(axis=1,inplace=True)
+
+        
+        if self.dimension == 'HNCA':
+            self.peak_list = self.peak_list[~self.peak_list.Assignment.str.contains("CO", regex=False)]
+            dim = 'CA'
+
+        # Estimate the number of residues
+        n_peaks = self.peak_list.shape[0]
+
+        # Sort between i and i-1 signals
+        sorted_peaks = []
+        for i in range(n_peaks):
+
+            pk_info = self.peak_list.Assignment.iloc[i].split('CA-')
+            pk_C_info = re.split('(\d.*)',str(pk_info[0]))
+            #Carbon ID
+            pk_type_C = pk_C_info[0]
+            pk_num_C = pk_C_info[1]
+            if re.split('(\d.*)',str(pk_info[1])) == ['N-H']: #takes care of i peaks
+                pass
+            else:
+                pk_HN_info = re.split('(\d.*)',str(pk_info[1]))
+                pk_type_HN = pk_HN_info[0]
+                pk_num_HN = pk_HN_info[1].split('N-H')[0]
+            shift = self.peak_list.w1.iloc[i]
+            if pk_num_C == pk_num_HN:
+                pk_type ='i'
+            else:
+                pk_type ='i-1'
+
+            sorted_peaks.append([pk_type_C,pk_num_C,pk_type,shift])
+        
+        # Format a proper output table
+        df_sorted_peaks = pd.DataFrame(sorted_peaks,columns=['res_type','Ass','signal','w_C'])
+
+        final_table = []
+        res_list = df_sorted_peaks.loc[:,'Ass'].unique()
+        for r in res_list:
+            df_sel = df_sorted_peaks[df_sorted_peaks.loc[:,'Ass']==r]
+
+            res_type = df_sel[df_sel.loc[:,'signal']=='i'].res_type.values
+
+            if df_sel[df_sel.loc[:,'signal']=='i-1'].empty:
+                w_Ci_1 = np.NaN
+            else:
+                res_type = df_sel[df_sel.loc[:,'signal']=='i-1'].res_type.values[0]
+                w_Ci_1 = df_sel[df_sel.loc[:,'signal']=='i-1'].w_C.values[0]
+
+            if df_sel[df_sel.loc[:,'signal']=='i'].empty:
+                w_Ci = np.NaN
+            else:
+                res_type = df_sel[df_sel.loc[:,'signal']=='i'].res_type.values[0]
+                w_Ci = df_sel[df_sel.loc[:,'signal']=='i'].w_C.values[0]
+
+            # by default select the i signal otherwise use the i-1 of the following residue
+            if w_Ci is np.NaN:
+                w_C = w_Ci_1
+            else:
+                w_C = w_Ci
+
+            final_table.append([int(r),w_C,res_type])#,w_Ci_1,w_Ci)
+
+        self.peak_list = pd.DataFrame(final_table,columns=['Ass','w_'+str(dim),'res_type'])
+        self.peak_list = self.peak_list.reset_index(drop=True).set_index(self.peak_list['Ass'])
 
     def split(self,word): 
         return [char for char in word] 
 
 class csp_calculation(object):
 
-    def __init__(self, set_data_1, set_data_2,w1,w2):
+    def __init__(self, set_data_1, set_data_2,w1,w2=False):
         self.set_data_1 =   set_data_1
         self.set_data_2 =   set_data_2
         self.w1         =   w1
@@ -243,11 +328,38 @@ class csp_calculation(object):
             'F' :  0.940746805,        #'F19'
             }
 
+        self.dw_values = False
         self.csp_values = False
-        self.csp_calculation()
+
+        if w2 is False:
+            self.dw_calculation()
+        else:
+            self.csp_calculation()
 
     # def split(self,word): 
     #     return [char for char in word] 
+
+    def dw_calculation(self):
+        """Calculate Detla_omega two peak lists.
+        
+        Returns:
+            dataframe: ass, dw_w1, res_type
+        """
+        common_reslist = list(set(self.set_data_1.ass.values.tolist()).intersection(self.set_data_2.ass.values.tolist()))
+
+        results = []
+        for i in range(len(common_reslist)):
+
+            data_1 = self.set_data_1[self.set_data_1.ass==common_reslist[i]]
+            data_2 = self.set_data_2[self.set_data_2.ass==common_reslist[i]]
+    
+            delta_w1 = data_1[data_1.nucleus==self.w1].iloc[0].loc['shift']-data_2[data_2.nucleus==self.w1].iloc[0].loc['shift']
+
+            res_type = data_1[data_1.nucleus==self.w1].iloc[0].loc['res_type']
+            results.append([common_reslist[i],delta_w1,res_type])
+        self.dw_values = pd.DataFrame(results,columns=['ass','delta_w'+str(self.w1),'res_type'])
+        self.dw_values=self.dw_values.round(4)
+        self.dw_values.sort_values(by=['ass'],inplace=True)
 
     def csp_calculation(self):
         """Calculate Detla_omegas and CSP between two peak lists.
@@ -255,12 +367,11 @@ class csp_calculation(object):
         Returns:
             dataframe: ass, dw_w1, dw_W2, csp, res_type
         """
-
+        
         alpha = self.gamma[self.w2]
 
         # get common peak list 
         common_reslist = list(set(self.set_data_1.ass.values.tolist()).intersection(self.set_data_2.ass.values.tolist()))
-        print(common_reslist)
         results = []
         for i in range(len(common_reslist)):
 
@@ -276,8 +387,9 @@ class csp_calculation(object):
             results.append([common_reslist[i],delta_w1,delta_w2,CSP,res_type])
         self.csp_values = pd.DataFrame(results,columns=['ass','delta_w'+str(self.w1),'delta_w'+str(self.w2),'csp','res_type'])
         self.csp_values=self.csp_values.round(4)
+        self.csp_values.sort_values(by=['ass'],inplace=True)
 
-    def csp_plot(self, plot=False):
+    def csp_plot(self, plot=False, index_residues=True, dw=False):
         """Plot experimental CSP
         Args:
 
@@ -287,9 +399,15 @@ class csp_calculation(object):
         if plot is False:
             fig, ax = plt.subplots(1, 1)
             fig.set_size_inches(12, 4)
+    
+        if index_residues is True:
+            ax.bar(self.csp_values.ass,self.csp_values.csp,color='darkblue')
+            ax.set_xlim(left=min(self.csp_values.ass)-2,right=max(self.csp_values.ass)+2)
+        else:
+            x_ticks_position = np.arange(0,len(self.csp_values.csp),1)
+            ax.bar(x_ticks_position,self.csp_values.csp,color='darkblue')
+            ax.set_xticks(x_ticks_position,self.csp_values.ass)
 
-        ax.bar(self.csp_values.ass,self.csp_values.csp,color='darkblue')
-        ax.set_xlim(left=min(self.csp_values.ass)-2,right=max(self.csp_values.ass)+2)
         ax.set_xlabel("residue number")
         ax.set_ylabel('CSP (ppm)')
         return fig
@@ -311,7 +429,6 @@ class data_consolidation(object):
         self.data_type = data_type
         self.res_list = []
         
-
         self.consolidated_data = False
 
         # if data_type == 'pH':
@@ -337,9 +454,14 @@ class data_consolidation(object):
         self.res_list = list(set(list(itertools.chain(*self.res_list))))
         general_table = []
 
+        if self.dim_data == '2D':
+            col = 3
+        else:
+            col = 2
+
         for res in self.res_list:
             for i in self.data.keys():
-                dim = list(self.data[i]['data'][self.data[i]['data'].Ass==res])[1:3]
+                dim = list(self.data[i]['data'][self.data[i]['data'].Ass==res])[1:col]
                 for d in dim :
                     try:
                         peak_info = list(self.data[i]['data'][self.data[i]['data'].Ass==res].loc[:,['Ass',d,'res_type']].values[0])
@@ -355,7 +477,8 @@ class data_consolidation(object):
         col_names.extend(['nucleus','shift','res_type'])
 
         self.consolidated_data = pd.DataFrame(general_table,columns=col_names)
-  
+        self.consolidated_data.sort_values(by=['ass'],inplace=True)
+
     def data_initialisaion_time(self):
         # Load a series of peak lists 
         for i in self.data.keys():
