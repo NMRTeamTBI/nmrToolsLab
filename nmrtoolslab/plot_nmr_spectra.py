@@ -64,7 +64,6 @@ def plot_nmr_spectra(
 
     if pseudo2D is True:
         data = data.loc[y_0:y_1,ppm_window[1]['mask']] 
-        print(data)
     else:
         if spec_lim is not None:
             if ndim == 2:
