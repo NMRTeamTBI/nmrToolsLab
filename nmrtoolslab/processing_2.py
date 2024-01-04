@@ -48,84 +48,6 @@ def read_topspin_data(data_path, dataset, expno, procno, scale_data=True):
 
     return data, dic, udic
 
-def read_varian_data(dir):
-    """
-    Loading bruker NMR data from varian -- mostly from HMDB
-
-    Parameters
-    __________
-    data_path : path
-        path to the data folder.
-    dataset : folder 
-        name of the data folder
-    expno : float
-        Experimental number
-    procno : float
-        Process number
-
-    Return
-    __________
-    data : 2D ndarray
-        Array NMR data
-    dic : dictionnary   
-        dictionnary
-: universal dictionnary
-        universal dictionnary
-    """
-
-    # read fid data
-    dic, data = ng.fileio.varian.read(dir,)
-
-    # ng.proc_base.ft(data)
-    # ng.proc_base.mir_left(data)
-    # ng.proc_base.neg_left(data)
-    # ng.proc_bl.sol_sine(data)
-
-    return data, dic
-
-def write_topspin_pdata(data_path, dataset, expno, procno, data, dic):
-   
-    # get complete data path
-    full_path = Path(data_path, dataset, str(expno))
-
-    ng.fileio.bruker.write_pdata(
-        full_path,
-        dic,
-        data,
-        overwrite=True,
-        pdata_folder=procno,       
-        write_procs=True,
-        scale_data=True
-        )
-
-def shifting_sum(data, udic, n_spec_wdw = 16):
-    """
-    Adding subsequent 1Ds from a pseudo-2D spectrum
-
-    Parameters
-    __________
-    data : 2D ndarray 
-        Array pseudo-2D NMR data.
-    udic : universal dictionnary 
-        Universal dictionnary 
-    n_spec_wdw : float, optionnal
-        Number of spectra added. Default is 16
-
-    Return
-    __________
-    data_sum : 2D ndarray
-        Array of co-added NMR data. Last rows are only zeros
-
-    """
-
-    data_sum = np.zeros([udic[0]['size'],udic[1]['size']])
-    for i in range(udic[0]['size']-n_spec_wdw):
-        selected_data = data[i:n_spec_wdw+i,:]
-        sum_selected_data = np.sum(selected_data,axis=0)
-        data_sum[i,:] = sum_selected_data
-
-    return data_sum
-
 def experiment_label(udic):
     label_info = {}
     for k in range(udic['ndim']):
@@ -147,7 +69,7 @@ def get_ppm_list(udic):
 
     return ppm_window
 
-def reduce_spectral_window(intensity,ppm_window,spec_lim):#,udic,spec_lim, pseudo2D : bool = False, time_scale = False):
+def reduce_spectral_window(intensity,ppm_window,spec_lim):
         
     # put data into dataframe
     intensity = pd.DataFrame(intensity)
@@ -170,43 +92,40 @@ def reduce_spectral_window(intensity,ppm_window,spec_lim):#,udic,spec_lim, pseud
 
     return intensity, ppm_window
 
-    # # select the window is required
-    # for k in range(ndim):
+# def shifting_sum(data, udic, n_spec_wdw = 16):
+#     """
+#     Adding subsequent 1Ds from a pseudo-2D spectrum
 
-    #     uc_F = ng.fileiobase.uc_from_udic(udic, k)e
-    #     ppm = pd.Series(uc_F.ppm_scale())
+#     Parameters
+#     __________
+#     data : 2D ndarray 
+#         Array pseudo-2D NMR data.
+#     udic : universal dictionnary 
+#         Universal dictionnary 
+#     n_spec_wdw : float, optionnal
+#         Number of spectra added. Default is 16
 
-    #     if pseudo2D is True:
-    #         if k == 0:
-    #             y_0, y_1 =  min(time_scale), max(time_scale)
-    #             ppm_window[k]['mask'] = []
-    #         if k == 1: #31P direct dimension
-    #             mask = (ppm >= min(spec_lim[k][0],spec_lim[k][1])) & (ppm <= max(spec_lim[k][0],spec_lim[k][1]))
-    #             ppm = ppm[mask]
-    #             ppm_window[k]['mask'] = mask
-    #             ppm_window[k]['ppm'] = ppm
-    #     else:
-    #         if spec_lim is not None:
-    #             mask = (ppm >= min(spec_lim[k][0],spec_lim[k][1])) & (ppm <= max(spec_lim[k][0],spec_lim[k][1]))
-    #             ppm = ppm[mask]
-    #             ppm_window[k]['mask'] = mask
-    #             ppm_window[k]['ppm'] = ppm
-    #         else:
-    #             ppm_window[k]['ppm'] = ppm
+#     Return
+#     __________
+#     data_sum : 2D ndarray
+#         Array of co-added NMR data. Last rows are only zeros
 
-    # if pseudo2D is True:
-    #     data = data.loc[y_0:y_1,ppm_window[1]['mask']] 
-    # else:
-    #     if spec_lim is not None:
-    #         if ndim == 2:
-    #             data = data.loc[ppm_window[0]['mask'],ppm_window[1]['mask']] 
-    #         if ndim == 1:
-    #             data = data.loc[ppm_window[0]['mask']] 
-   
-    # for i in range(len(ppm_window)):
-    #     del ppm_window[i]['mask'] 
+#     """
 
-    # return data, ppm_window
+#     data_sum = np.zeros([udic[0]['size'],udic[1]['size']])
+#     for i in range(udic[0]['size']-n_spec_wdw):
+#         selected_data = data[i:n_spec_wdw+i,:]
+#         sum_selected_data = np.sum(selected_data,axis=0)
+#         data_sum[i,:] = sum_selected_data
+
+#     return data_sum
+
+
+
+
+
+
+
 
 class analysis_1d(object):
     def __init__(self,data,udic,spec_wdw=False):

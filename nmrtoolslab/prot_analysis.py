@@ -11,6 +11,8 @@ from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import os 
 import re
+from tqdm import tqdm
+
 
 three_to_one = {
     'CYS': 'C',
@@ -112,21 +114,44 @@ class import_bmrb(object):
         self.shifts_to_sim = pd.DataFrame(tmp,columns=['res','1H','15N'])
     
 class nmrpipe_file(object):
-    def __init__(self,path,file_name,time_step,Exp=False):
+
+    def __init__(self,path,exp_num,file_name=False,time_step=False,Exp=False,info_T1rho_correction=False):
         self.path = path
         self.file_name = file_name 
+        self.exp_num = exp_num
         self.time_step = time_step
+        self.info_T1rho_correction = info_T1rho_correction
 
         self.experimental_data = False
+        self.fit_params_res = False
 
         self.Exp = Exp
+
         if self.Exp is True:
+            print('hello')
             self.decay_curves()
-            
+
+        if self.Exp == 'T1':
+            self.relax_fit_parameters()
+            self.relax_exp_data()
+        if self.Exp == 'T1rho':
+            self.relax_fit_parameters()
+            # self.T1rho_correction()
+        if self.Exp == 'NOE':
+            self.NOE()
+
+    def check_residue(self,res):
+        # Check if the desired residue is in the residue list
+        if res in self.fit_params_res.ass.tolist():
+            pass
+        else:
+            print('##-- residue: '+str(res)+' is not in the assignment list --##')
+            exit()
+
     def load_series_data(self):
         #reads nlin.tab file for a series of experiments
         # data path
-        full_path = Path(self.path, self.file_name)
+        full_path = Path(self.path, str(self.exp_num), self.file_name)
 
         # reads in data
         data = pd.read_table(full_path,header=6,sep='\s+')
@@ -142,6 +167,77 @@ class nmrpipe_file(object):
         data.columns = column_names
         
         return data 
+
+    def NOE(self):
+        data = self.load_series_data()
+
+        # columns with intensities
+        intensity_column_names = [s for s in data.columns.values.tolist()[1:] if "Z_" in s]
+        intensity_column_names = ['HEIGHT','DHEIGHT']+intensity_column_names
+        # get list of residue   
+        reslist = data.loc[:,'ASS'].values.tolist()
+
+        #consolidated data
+        consolidated_data = []
+        for r in reslist:
+            res_data = data[data.loc[:,'ASS']==r].loc[:,intensity_column_names].iloc[0]
+            consolidated_data.append([int(r),float(res_data.loc['Z_A0']),float(res_data.loc['Z_A1']),float(res_data.loc['HEIGHT']),float(res_data.loc['DHEIGHT']),float(res_data.loc['Z_A1'])])
+
+        self.experimental_data = pd.DataFrame(consolidated_data,columns=['ass','Z_A0','Z_A1','HEIGHT','DHEIGHT','noe'])
+        self.experimental_data.sort_values(by=['ass'],inplace=True)
+        self.experimental_data['err_noe'] = np.sqrt(2*((self.experimental_data.DHEIGHT/self.experimental_data.HEIGHT)**2))
+
+    def relax_fit_parameters(self):
+        # list all gnu files containing fitting parameters
+        all_files = os.listdir(self.path+'/'+str(self.exp_num)+'/gnu')
+        consolidated_data = []
+        for i in range(len(all_files)):
+            with open(self.path+'/'+str(self.exp_num)+'/gnu/'+all_files[i]) as f:
+                gnu_file = f.readlines()
+                fit_res = [float(p) for p in gnu_file[3].split()[3::2][:-1]]
+                consolidated_data.append(fit_res)
+        self.fit_params_res = pd.DataFrame(consolidated_data,columns=['idx','ass','amp','err_amp','alpha','err_alpha'])
+        self.fit_params_res.sort_values(by=['idx'],inplace=True)
+        self.fit_params_res = self.fit_params_res.astype({"idx":"int","ass":"int"})
+        #calculate rates
+        self.fit_params_res['rate'] = 1000/self.fit_params_res.alpha
+        self.fit_params_res['err_rate'] = self.fit_params_res.rate*(self.fit_params_res.err_alpha/self.fit_params_res.alpha)
+
+    def relax_exp_data(self):
+        # list all gnu files containing fitting parameters
+        all_files = os.listdir(self.path+'/'+str(self.exp_num)+'/txt')
+        tmp_res = []
+        for i in range(len(all_files)):
+            with open(self.path+'/'+str(self.exp_num)+'/txt/'+all_files[i]) as f:
+                txt_file = f.readlines()
+                idx = re.findall(r'\d+',(all_files[i]))[0]
+                for k in range(len(txt_file)):
+                    tmp_res.append([int(idx)]+[float(p) for p in txt_file[k].split()])
+        self.experimental_data = pd.DataFrame(tmp_res,columns=['idx','delay','I','E_I'])
+
+    def plot_relax_curve(self,res):
+        self.check_residue(res)
+        # def exp_function(self):
+        fig, ax = plt.subplots()
+
+        # return Amp*np.exp(-x/Alpha)
+
+        params = self.fit_params_res[self.fit_params_res.ass==res]  
+        data = self.experimental_data[self.experimental_data.idx==params.idx.values[0]]  
+
+        time_fit = np.linspace(min(data.delay),max(data.delay),1000)
+        I_fit = params.amp.values[0]*np.exp(-time_fit/params.alpha.values[0])
+
+        ax.errorbar(data.delay, data.I, data.E_I,marker='o',ls='none',color='darkblue')
+        ax.plot(time_fit,I_fit,color='darkblue')        
+        ax.set_xlabel('delay (ms)')
+        ax.set_ylabel(r'I/I$_0$')
+        ax.text(0.05,0.1,str('alpha')+' = '+str(params.alpha.values[0])+' +/- '+str(params.err_alpha.values[0])+' $(s^{-1})$',transform=ax.transAxes)
+        ax.text(0.05,0.05,str('amp')+' = '+str(params.amp.values[0])+' +/- '+str(params.err_amp.values[0]),transform=ax.transAxes)
+
+        ax.set_ylim(0,1.1)
+        plt.show()
+        # print(data)
 
     def decay_curves(self):
         data = self.load_series_data()
@@ -168,7 +264,25 @@ class nmrpipe_file(object):
         # print(data.loc[:,intensity_column_names].head())
         consolidated_data = pd.DataFrame(consolidated_data,columns=['ass','spec','delay','norm_int'])
         self.experimental_data = consolidated_data
-        
+
+    def T1rho_correction(self):
+
+        self.exp_num = self.info_T1rho_correction['t1_exp_num']
+        t1_data = self.load_series_data()
+
+        t1_data_sel = t1_data[['ASS','Y_PPM']]
+        t1_data_sel = t1_data_sel.apply(pd.to_numeric)
+        t1_data_sel['Offset'] = (t1_data_sel['Y_PPM'] - self.info_T1rho_correction['Carrier_Frequency'])/self.info_T1rho_correction['Observed_Frequency']
+        t1_data_sel['Theta'] = np.arctan(t1_data_sel['Offset']/self.info_T1rho_correction['Offset'])
+
+        A = 1.6*(np.sin(t1_data_sel['Theta'])**2)
+        B = np.cos(t1_data_sel['Theta'])**2
+        print(B)
+        self.fit_params_res['rate_cor'] = (1000/self.fit_params_res['alpha']-A)/B
+        self.fit_params_res['err_rate_cor'] = (1000/self.fit_params_res['alpha'])*(self.fit_params_res['err_alpha']/self.fit_params_res['alpha'])
+
+        # print(self.fit_params_res.head())
+      
 class sparky_list(object):
 
     def __init__(self,path,list_name,peak_label,dimension):
@@ -201,32 +315,58 @@ class sparky_list(object):
         # Estimate the number of residues
         n_res = self.peak_list.shape[0]
 
-        # Obtain the residue list
-        amino_acid_assignment = [int("".join(self.split(self.peak_list.Assignment.iloc[i].replace(self.peak_label,''))[1:])) for i in range(n_res) ]
+        # print(len(list(self.peak_label)))
+        if isinstance(self.peak_label, str) is True:
+            #Obtain the residue list
+            amino_acid_assignment = [int("".join(self.split(self.peak_list.Assignment.iloc[i].replace(self.peak_label,''))[1:])) for i in range(n_res) ]
+            # Obtain the residue type for each residue
+            amino_acid_type = ["".join(self.split(self.peak_list.Assignment.iloc[i])[0]) for i in range(n_res) ]
+            exp_dimensions = self.peak_label.split('-')#self.split(self.peak_label,'-')
 
-        # Obtain the residue type for each residue
-        amino_acid_type = ["".join(self.split(self.peak_list.Assignment.iloc[i])[0]) for i in range(n_res) ]
+
+        if isinstance(self.peak_label, list) is True:
+            amino_acid_assignment = []
+            amino_acid_type = []
+            peak_label = []
+            for i in range(n_res):
+                tmp = self.peak_list.Assignment.iloc[i]
+                for pl in self.peak_label:
+                    if tmp.find(pl) != -1 : 
+                       amino_acid_assignment.append(int("".join(self.split(self.peak_list.Assignment.iloc[i].replace(pl,''))[1:])))
+                       amino_acid_type.append("".join(self.split(self.peak_list.Assignment.iloc[i])[0]))
+                       peak_label.append(pl)
+                    #    self.peak_list.Assignment.iloc[i] = amino_acid_assignment
+                    else:
+                        pass
+            self.peak_list['Peak_Label'] = peak_label
+            exp_dimensions = [list(peak_label[0].split('-')[0])[0],list(peak_label[1].split('-')[1])[0]]
 
         self.peak_list['Assignment']  = amino_acid_assignment
         self.peak_list['Res_Type']    = amino_acid_type
 
-        exp_dimensions = self.peak_label.split('-')#self.split(self.peak_label,'-')
-
-        self.peak_list.rename(columns={
-            'Assignment':'Ass',
-            'Res_Type':'res_type',
-            'w1':'w_'+str(exp_dimensions[0]),
-            'w2':'w_'+str(exp_dimensions[1]),
-
-            },
-              inplace=True)
+        if 'Peak_Label' in self.peak_list.columns:
+            self.peak_list.rename(columns={
+                'Assignment':'Ass',
+                'Res_Type':'res_type',
+                'w1':'w_'+str(exp_dimensions[0]),
+                'w2':'w_'+str(exp_dimensions[1]),
+                'Peak_Label' : 'Peak_Label',
+                },
+                inplace=True)
+        else:
+            self.peak_list.rename(columns={
+                'Assignment':'Ass',
+                'Res_Type':'res_type',
+                'w1':'w_'+str(exp_dimensions[0]),
+                'w2':'w_'+str(exp_dimensions[1]),
+                },
+                inplace=True)
 
         self.peak_list = self.peak_list.reset_index(drop=True).set_index(self.peak_list['Ass'])
-
         if 'Data' in self.peak_list.columns:
             self.peak_list.drop(['Height'],axis=1,inplace=True)
             self.peak_list.rename(columns={'Data':'Height'},inplace=True)
-    
+
     def read_peaklist_3D(self):
         full_path = Path(self.path, str(self.list_name)+'.list')
 
@@ -357,7 +497,7 @@ class csp_calculation(object):
 
             res_type = data_1[data_1.nucleus==self.w1].iloc[0].loc['res_type']
             results.append([common_reslist[i],delta_w1,res_type])
-        self.dw_values = pd.DataFrame(results,columns=['ass','delta_w'+str(self.w1),'res_type'])
+        self.dw_values = pd.DataFrame(results,columns=['ass','delta_w','res_type'])
         self.dw_values=self.dw_values.round(4)
         self.dw_values.sort_values(by=['ass'],inplace=True)
 
@@ -389,7 +529,7 @@ class csp_calculation(object):
         self.csp_values=self.csp_values.round(4)
         self.csp_values.sort_values(by=['ass'],inplace=True)
 
-    def csp_plot(self, plot=False, index_residues=True, dw=False):
+    def csp_plot(self, plot=False, index_residues=True):
         """Plot experimental CSP
         Args:
 
@@ -412,6 +552,32 @@ class csp_calculation(object):
         ax.set_ylabel('CSP (ppm)')
         return fig
 
+    def dw_plot(self, plot=False, index_residues=True):
+        """Plot experimental dw
+        Args:
+
+        Returns: 
+            go.Figure: plotly figure
+        """
+        if plot is False:
+            fig, ax = plt.subplots(1, 1)
+            fig.set_size_inches(12, 4)
+    
+        if index_residues is True:
+            ax.bar(self.dw_values.ass,abs(self.dw_values.delta_w),color=((self.dw_values.delta_w) > 0).map({True: 'darkblue',False: 'orange'}))
+            ax.set_xlim(left=min(self.dw_values.ass)-2,right=max(self.dw_values.ass)+2)
+        else:
+            x_ticks_position = np.arange(0,len(self.dw_values.delta_w),1)
+            ax.bar(x_ticks_position,self.dw_values.delta_w,color=((self.dw_values.delta_w) > 0).map({True: 'darkblue',False: 'orange'}))
+            ax.set_xticks(x_ticks_position,self.dw_values.ass)
+        
+        ax.text(0.1,0.9,r'$\Delta\omega$ >0',color='darkblue',transform=ax.transAxes)
+        ax.text(0.1,0.8,r'$\Delta\omega$ <0',color='orange',transform=ax.transAxes)
+
+        ax.set_xlabel("residue number")
+        ax.set_ylabel(r'$\Delta\omega$ (ppm)')
+
+        return fig
     def csp_to_pdb(self,full_reslist,path,file_name):
         new_df = pd.DataFrame({'ass':full_reslist})
         new_df = new_df.merge(self.csp_values, on='ass', how='left')
@@ -441,6 +607,7 @@ class data_consolidation(object):
         return [char for char in word] 
 
     def data_initialisaion(self):
+
         # Load a series of peak lists 
         for i in self.data.keys():
             pk_list = sparky_list(
@@ -449,6 +616,7 @@ class data_consolidation(object):
                 self.data[i]['peak_label'],
                 self.dim_data
                 )
+            
             self.data[i]['data'] = pk_list.peak_list
             self.res_list.append(self.data[i]['data'].Ass.tolist())
         self.res_list = list(set(list(itertools.chain(*self.res_list))))
@@ -459,22 +627,44 @@ class data_consolidation(object):
         else:
             col = 2
 
-        for res in self.res_list:
+        if 'Peak_Label' not in self.data[i]['data'].columns:
+            for res in self.res_list:
+                for i in self.data.keys():
+                    dim = list(self.data[i]['data'][self.data[i]['data'].Ass==res])[1:col]
+                    for d in dim :
+                        try:
+                            cols = ['Ass',d,'res_type']
+                            if 'Height' in pk_list.peak_list.columns:
+                                cols.append('Height')
+                            peak_info = list(self.data[i]['data'][self.data[i]['data'].Ass==res].loc[:,cols].values[0])
+
+                            for k in range(len(self.data_type)):
+                                peak_info.insert(1+k,self.data[i][self.data_type[k]])
+                            peak_info.insert(k+2,self.split(d)[2])
+                            general_table.append(peak_info)
+                        except:
+                            pass
+
+        if 'Peak_Label' in self.data[i]['data'].columns:
             for i in self.data.keys():
-                dim = list(self.data[i]['data'][self.data[i]['data'].Ass==res])[1:col]
-                for d in dim :
-                    try:
-                        peak_info = list(self.data[i]['data'][self.data[i]['data'].Ass==res].loc[:,['Ass',d,'res_type']].values[0])
-                        for k in range(len(self.data_type)):
-                            peak_info.insert(1+k,self.data[i][self.data_type[k]])
-                        peak_info.insert(k+2,self.split(d)[2])
+                data = self.data[i]['data']
+                for idx in range(len(data)):
+                    for n in range(1,3):
+                        nuc = list(data.columns)[n][2].split('-')[0]
+                        "match nucleus and peak label"
+                        label_list = data.iloc[idx,3].split('-')
+                        label_check = [nuc in label_list[k] for k in range(2)]
+                        tt = [i for i, x in enumerate(label_check) if x]
+                        self.data[i][self.data_type[0]]
+                        peak_info = [data.iloc[idx,0],self.data[i][self.data_type[0]],label_list[tt[0]],data.iloc[idx,n],data.iloc[idx,4]]
                         general_table.append(peak_info)
-                    except:
-                        pass
 
         col_names = ['ass']
         col_names.extend(list(self.data_type))
-        col_names.extend(['nucleus','shift','res_type'])
+        cols = ['nucleus','shift','res_type']
+        if 'Height' in pk_list.peak_list.columns:
+            cols.append('Height')
+        col_names.extend(cols)
 
         self.consolidated_data = pd.DataFrame(general_table,columns=col_names)
         self.consolidated_data.sort_values(by=['ass'],inplace=True)
@@ -505,6 +695,69 @@ class data_consolidation(object):
 
         self.consolidated_data = pd.DataFrame(general_table,columns=['ass',self.data_type,'Height','res_type'])
 
+class temperature_fitting(object):
+    def __init__(self,data,res,nucleus):
+        self.data = data 
+        self.res = res
+        self.nucleus = nucleus
+
+        self.params = []
+        self.err_params = []
+        self.shift = []
+        self.temperature_pts = []
+
+        self.data_selection()
+
+    def data_selection(self):
+        selected_data = self.data[(self.data.ass==self.res)&(self.data.nucleus==self.nucleus)]
+        self.temperature_pts =  selected_data.loc[:,'Temp'].tolist()
+        self.temperature_pts = [i - 273 for i in self.temperature_pts] # Data in Celsius
+        self.shift =  selected_data.loc[:,'shift'].tolist()
+
+    def linear_model(sefl,a,b,T):
+        return a + b*T
+
+    def fit(self):
+
+        popt, pcov = curve_fit(lambda T, a, b : self.linear_model(a,b,T), self.temperature_pts, self.shift)
+        self.params = popt
+        self.err_params = [pcov[0,0]**0.5,pcov[1,1]**0.5]
+
+    def plot(self, fit: bool = False, plot:bool = False, color:bool = False):
+        if plot is False:
+            fig, ax = plt.subplots()
+            plot = ax
+
+
+        #Experimental data
+        plot.plot(
+            self.temperature_pts,
+            self.shift, 
+            ls='none',
+            marker='o',
+            color="b" if color is False else color
+            )
+
+        #Fitted Curve
+        if fit:
+            temperature_sim = np.linspace(min(self.temperature_pts),max(self.temperature_pts)+1,100)    
+            simulated_curve = self.linear_model(self.params[0],self.params[1],temperature_sim)
+
+            plot.plot(
+                temperature_sim, 
+                simulated_curve, 
+                ls='-', 
+                color="b" if color is False else color
+                )
+        plot.set_ylabel(r'I/I$_{0}$')
+        plot.set_xlabel('temperature (K)')
+        plot.set_title(self.res)
+
+        if plot is False:
+            return plot
+        else:
+            pass
+    
 class time_fitting(object):
     def __init__(self,data,res, normalized=False):
         self.data = data 
@@ -569,28 +822,66 @@ class time_fitting(object):
 
 class pKA_fitting(object):
 
-    def __init__(self,data,res, nuclei, model,new_params=False):
-        self.data = data        
-        self.res = res
+    def __init__(self, data, model, fit_info=False,new_params=False,mc=False,n_mc=False,errors_mc=False):
+        self.data = data     
         self.fit_res = {}
-        self.nuclei = nuclei
         self.model = model
         self.new_params = new_params
+        self.fit_info = fit_info
         self.params = False
+        self.rmsd = False
+        self.params_mc = False
+        self.mc=mc
+        
+        self.data_mc = False
 
         self.data_selection()
 
+        if self.mc is True: # perform monte-carlo analysis
+            # this includes error on both pH and chemical shifts
+            self.errors_mc = errors_mc
+            self.params_mc = pd.DataFrame()
+            self.data_mc = pd.DataFrame()
+            for n in tqdm(range(n_mc)):
+                self.selected_data_mc = []
+                
+                self.prepare_monte_carlo_analysis()
+
+                
+                self.fitted_data = self.selected_data_mc
+                self.fit()
+
+                params_sel = self.params.loc[:,('par','ass','nucleus','opt')]
+                params_sel.loc[:,'mc_idx'] = n
+                self.params_mc = pd.concat([self.params_mc,params_sel],ignore_index=True)
+
+                self.selected_data_mc.loc[:,'mc_idx'] = n
+                self.selected_data_mc.loc[:,'pH_ini'] = self.selected_data.loc[:,'pH']
+                self.selected_data_mc.loc[:,'shift_ini'] = self.selected_data.loc[:,'shift']
+
+                self.data_mc = pd.concat([self.data_mc,self.selected_data_mc],ignore_index=True)
+        else:
+            self.fitted_data = self.selected_data
+
+        self.fit()
+
     def data_selection(self):
+        appended_data = []
         #select data to fit
-        self.selected_data = self.data[self.data.ass.isin(self.res)]
-        # self.selected_data = self.data[self.data.ass == self.res]
+        self.res_list = list(self.fit_info.keys())
 
-        self.selected_data = self.selected_data[self.selected_data.nucleus.isin(self.nuclei)]
+        for r in self.res_list:
+            nuc_list = self.fit_info[r]['nuclei']
+            res_data = self.data[(self.data.ass==r)]
+            appended_data.append(res_data[res_data.nucleus.isin(nuc_list)])
+
+        self.selected_data = pd.concat(appended_data)
         self.selected_data.reset_index(inplace=True,drop=True)
-
+        if 'Height' in self.selected_data.columns:
+            self.selected_data.drop(['Height'],axis=1,inplace=True)
         self.res_list = list(self.selected_data.loc[:,'ass'].unique())
         self.nuclei_list = list(self.selected_data.loc[:,'nucleus'].unique())
-
+        
     def build_models(self):
         if self.model == 1:
             self.model_name = 'model_1pKa'
@@ -610,9 +901,25 @@ class pKA_fitting(object):
         base_params = {   
             'pKa': {'ini':4, 'lb': 2, 'ub': 10},
             'shift':{
-                'H':{'ini':7, 'lb': 2, 'ub': 12},
-                'N':{'ini':120, 'lb': 100, 'ub': 140},
+                # He1-Ce1 correlations
+                'HE':{'ini':7, 'lb': 2, 'ub': 12},
                 'C':{'ini':140, 'lb': 130, 'ub': 150},
+                # H-N backbone
+                'HN':{'ini':7, 'lb': 2, 'ub': 12},
+                'N':{'ini':120, 'lb': 100, 'ub': 140},
+                # H-N 2J
+                'NE2_d_r':{'ini':220, 'lb': 100, 'ub': 250},
+                'NE2_d_l':{'ini':220, 'lb': 100, 'ub': 250},
+
+                'ND1_s_r':{'ini':220, 'lb': 100, 'ub': 250},
+                'ND1_s_l':{'ini':220, 'lb': 100, 'ub': 250},
+
+                'HE1_d_l':{'ini':7, 'lb': 2, 'ub': 12},
+                'HE1_s_l':{'ini':7, 'lb': 2, 'ub': 12},
+
+                'HD2_d_r':{'ini':7, 'lb': 2, 'ub': 12},
+                'HD2_s_r':{'ini':7, 'lb': 2, 'ub': 12},
+                
             }
         }
 
@@ -633,7 +940,7 @@ class pKA_fitting(object):
 
         for res in self.res_list:
 
-            for nucleus in self.nuclei_list:
+            for nucleus in self.fit_info[res]['nuclei']:
                 shift_indexes = [i for i, x in enumerate(self.params_type) if x == 'shift']
                 for s in shift_indexes:
                     tmp_params.append([
@@ -645,7 +952,6 @@ class pKA_fitting(object):
                         base_params[self.params_type[s]][nucleus]['lb'],
                         base_params[self.params_type[s]][nucleus]['ub']
                         ])
-        
         self.params = pd.DataFrame(tmp_params,columns=['par','par_type','ass','nucleus','ini','lb','ub'])
 
         # add par index in model vector        
@@ -675,15 +981,14 @@ class pKA_fitting(object):
     def unpack_fit_parameters(self,params):
         self.fit_par = {}
 
-        
         #pKa independant of res and nucleus
         pKa_idx = self.params[self.params['par_type']=='pKa'].par_idx.values
         pKa_model_idx = self.params[self.params['par_idx'].isin(pKa_idx)][['par','model_idx','par_idx']]
 
         for res in self.res_list:
             nuc_dict = {}
-            nuc_res =self.params[self.params.ass==res]
-            for s in self.nuclei_list:
+            nuc_res = self.params[self.params.ass==res]
+            for s in self.fit_info[res]['nuclei']:
                 nuc_params =nuc_res[nuc_res.nucleus==s]
                 # print(nuc_params)
                 test = [None]*len(self.params_name)
@@ -718,6 +1023,23 @@ class pKA_fitting(object):
         self.simulate(params,df)
         rmsd = np.sqrt(np.mean((self.simulate_shift-df.loc[:,'shift'].values)**2))
         return rmsd
+
+    def back_calculated_rmsd(self,df):
+        rmsd = np.sqrt(np.mean((df.loc[:,'simulated']-df.loc[:,'shift'].values)**2))
+        return rmsd
+
+    def prepare_monte_carlo_analysis(self):
+        for index,row in self.selected_data.iterrows():
+
+            # Monte Carlo on pH
+            pH_mc = np.random.normal(loc=row['pH'],scale=float(self.errors_mc['pH']))
+            # Monte Carlo on Shift
+            shift_mc = np.random.normal(loc=float(row['shift']),scale=float(self.errors_mc[str(row.nucleus)]))
+            # append value
+            self.selected_data_mc.append([row.ass, pH_mc, row.nucleus, shift_mc, row.res_type])
+
+        #Create DataFrame
+        self.selected_data_mc = pd.DataFrame(self.selected_data_mc,columns=self.selected_data.columns)
 
     @staticmethod
     def _linear_stats(res, ftol: float = 2.220446049250313e-09) -> list:
@@ -759,14 +1081,46 @@ class pKA_fitting(object):
             self.fit_objective,
             x0 = x0,
             #method="L-BFGS-B",
-            args = (self.selected_data),
+            args = (self.fitted_data),
             bounds=bounds
         )
         standard_deviations = self._linear_stats(self.fit_res)
 
         self.params['opt'] = self.fit_res.x
         self.params['opt_sd'] = standard_deviations
- 
+        
+        self.fitted_data['simulated'] = self.simulate_shift
+        # overall rmsd
+        self.rmsd = self.fit_objective(self.params['opt'].values.tolist(),self.fitted_data)
+        
+    def simulate_for_plot(self, res, nucleus):
+        data_res = self.selected_data[(self.selected_data.ass == res) & (self.selected_data.nucleus == nucleus)]
+        pH_simulated = np.linspace(min(data_res.pH)-0.1,max(data_res.pH)+0.1,100)    
+        if self.mc is True:
+            mean_params_mc = self.params_mc.groupby(['par','ass','nucleus'], as_index=False)['opt'].mean()
+            std_params_mc = self.params_mc.groupby(['par','ass','nucleus'], as_index=False)['opt'].std()
+
+            for index, row in self.params.iterrows():
+                if row.par in ['pKa','pKa_1','pKa_2']:
+                    self.params.loc[index,'opt'] = mean_params_mc[(mean_params_mc.loc[:,'par']==row.par)].opt.values[0]
+                    self.params.loc[index,'opt_sd'] = std_params_mc[(std_params_mc.loc[:,'par']==row.par)].opt.values[0]
+
+                else:
+                    self.params.loc[index,'opt'] = mean_params_mc[(mean_params_mc.loc[:,'ass']==row.ass) & (mean_params_mc.loc[:,'par']==row.par) & (mean_params_mc.loc[:,'nucleus']==row.nucleus)].opt.values[0]
+                    self.params.loc[index,'opt_sd'] = std_params_mc[(std_params_mc.loc[:,'ass']==row.ass) & (std_params_mc.loc[:,'par']==row.par) & (std_params_mc.loc[:,'nucleus']==row.nucleus)].opt.values[0]
+
+            self.unpack_fit_parameters(self.params['opt'].values.tolist())
+        else:
+            pass
+        shift_simulated_curve = self.func(pH_simulated,self.fit_par[res][nucleus])
+        return pH_simulated, shift_simulated_curve
+    
+    def data_for_plot(self,res,nucleus):
+        data_res = self.selected_data[(self.selected_data.ass == res) & (self.selected_data.nucleus == nucleus)]
+        pH_exp = data_res.pH
+        shift_exp = data_res.loc[:,'shift']
+        return pH_exp,shift_exp
+
     def plot(self, res, fit: bool = False):
         
         if len(self.nuclei) == 2:
@@ -775,18 +1129,18 @@ class pKA_fitting(object):
             fig_full = make_subplots(rows=1, cols=1)
 
         
-        data_res = self.selected_data[self.selected_data.ass == res]
+        data_res = self.fitted_data[self.fitted_data.ass == res]
 
         ## ---  First nucleus 
         #Experimental data
-        data_res_nucleus = data_res[data_res.nucleus==self.nuclei[0]]
+        data_res_nucleus = data_res[data_res.nucleus=='HN']#self.nuclei[0]
         fig_1 = go.Scatter(x=data_res_nucleus.loc[:,'pH'],y=data_res_nucleus.loc[:,'shift'], name='data: '+str(self.nuclei[0]), mode='markers',marker_color="#EF553B")
         fig_full.add_trace(fig_1, row=1, col=1)
 
         #Fitted Curve
         if fit:
             pH_all = np.linspace(min(data_res_nucleus.loc[:,'pH'])-0.2,max(data_res_nucleus.loc[:,'pH'])+0.2,100)    
-            simulated_curve = self.func(pH_all,self.fit_par[res][self.nuclei[0]])
+            simulated_curve = self.func(pH_all,self.fit_par[res]['self.nuclei[0]'])
             fig_fit = go.Scatter(x=pH_all, y=simulated_curve, mode='lines', name='best fit', marker_color="#EF553B")
             fig_full.add_trace(fig_fit, row=1, col=1)
 
@@ -814,36 +1168,54 @@ class pKA_fitting(object):
 
         return fig_full
     
-    def plot_matplotlib(self, res, fit: bool = False):
-        
-        fig, ax1 = plt.subplots()
-        if len(self.nuclei) == 2:
-            ax2 = ax1.twinx()
+    def plot_matplotlib(self, res, fit: bool = False, plot = False):
 
-        
+        if plot is False:
+            fig, plot = plt.subplots()
+            if len(self.nuclei) == 2:
+                ax2 = plot.twinx()
+        else: 
+            ax2 = plot.twinx()
+
+
+        if self.mc is True: # perform monte-carlo analysis
+            mean_params_mc = self.params_mc.groupby(['par','ass','nucleus'], as_index=False)['opt'].mean()
+            std_params_mc = self.params_mc.groupby(['par','ass','nucleus'], as_index=False)['opt'].std()
+
+            for index, row in self.params.iterrows():
+                if row.par in ['pKa','pKa_1','pKa_2']:
+                    self.params.loc[index,'opt'] = mean_params_mc[(mean_params_mc.loc[:,'par']==row.par)].opt.values[0]
+                    self.params.loc[index,'opt_sd'] = std_params_mc[(std_params_mc.loc[:,'par']==row.par)].opt.values[0]
+
+                else:
+                    self.params.loc[index,'opt'] = mean_params_mc[(mean_params_mc.loc[:,'ass']==row.ass) & (mean_params_mc.loc[:,'par']==row.par) & (mean_params_mc.loc[:,'nucleus']==row.nucleus)].opt.values[0]
+                    self.params.loc[index,'opt_sd'] = std_params_mc[(std_params_mc.loc[:,'ass']==row.ass) & (std_params_mc.loc[:,'par']==row.par) & (std_params_mc.loc[:,'nucleus']==row.nucleus)].opt.values[0]
+
+            self.unpack_fit_parameters(self.params['opt'].values.tolist())
+
         data_res = self.selected_data[self.selected_data.ass == res]
 
         ## ---  First nucleus 
         #Experimental data
         data_res_nucleus = data_res[data_res.nucleus==self.nuclei[0]]
-        ax1.plot(data_res_nucleus.loc[:,'pH'],data_res_nucleus.loc[:,'shift'], marker='o',ls='none',color="blue")
+        plot.plot(data_res_nucleus.loc[:,'pH'],data_res_nucleus.loc[:,'shift'], marker='o',ls='none',color="blue")
         # print(list(data_res_nucleus.loc[:,'nucleus'])[0])
-        ax1.set_ylabel(str(list(data_res_nucleus.loc[:,'nucleus'])[0])+' (ppm)',color='blue')
-        ax1.set_xlabel('pH')
-        ax1.tick_params(axis ='y', labelcolor = 'blue')
+        plot.set_ylabel(r'$\delta$'+str(list(data_res_nucleus.loc[:,'nucleus'])[0])+' (ppm)',color='blue')
+        plot.set_xlabel('pH')
+        plot.tick_params(axis ='y', labelcolor = 'blue')
 
         #Fitted Curve
         if fit:
             pH_all = np.linspace(min(data_res_nucleus.loc[:,'pH'])-0.2,max(data_res_nucleus.loc[:,'pH'])+0.2,100)    
             simulated_curve = self.func(pH_all,self.fit_par[res][self.nuclei[0]])
-            ax1.plot(pH_all, simulated_curve, color="blue")
+            plot.plot(pH_all, simulated_curve, color="blue")
 
         ## ---  Second nucleus only if it exists
         #Experimental data
         if len(self.nuclei) == 2:
             data_res_nucleus = data_res[data_res.nucleus==self.nuclei[1]]
             ax2.plot(data_res_nucleus.loc[:,'pH'],data_res_nucleus.loc[:,'shift'],marker='o',ls='none',color="red")
-            ax2.set_ylabel(str(list(data_res_nucleus.loc[:,'nucleus'])[0])+' (ppm)',color='red')
+            ax2.set_ylabel(r'$\delta$'+str(list(data_res_nucleus.loc[:,'nucleus'])[0])+' (ppm)',color='red')
             ax2.tick_params(axis ='y', labelcolor = 'red')
         #Fitted Curve
             if fit:
@@ -851,11 +1223,5 @@ class pKA_fitting(object):
                 simulated_curve = self.func(pH_all,self.fit_par[res][self.nuclei[1]])
                 ax2.plot(pH_all, simulated_curve, color="red")
 
-
-        # fig.update_layout(
-        #     title="",
-        #     xaxis_title="pH",
-        #     yaxis_title="CC",
-        #     legend_title="Legend Title",
-        #     )
-        return fig
+        if plot is False:
+            return fig

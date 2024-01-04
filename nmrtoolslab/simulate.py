@@ -186,4 +186,46 @@ class exchange_simulation(object):
         detection_vector = np.array([0, 1, 1j, 0, 1, 1j, 0])
         self.signal = np.dot(M, detection_vector).reshape(-1)
         
+class Simulation_1D:
+    def __init__(self, args):
+        self.args = args
+        
+    def Singlet(self):
+        #Lorentzian + Gaussian   
+        x = self.args[0]; x0 = self.args[1]; a = self.args[2]; h_s = self.args[3]; lw = self.args[4]
+        Signal = a * h_s  / ( 1 + (( x - x0 )/lw)**2) + (1-a)*h_s*np.exp(-(x-x0)**2/(2*lw**2))    
+        return Signal
 
+    def Doublet(self):
+        x = self.args[0]; x0 = self.args[1]; a = self.args[2]; h_s = self.args[3]; lw = self.args[4]; J1 = self.args[5]
+        S1 = a * h_s  / ( 1 + (( x - x0 - (J1/2))/lw)**2) + (1-a)*h_s*np.exp(-(x - x0 - (J1/2))**2/(2*lw**2))
+        S2 = a * h_s  / ( 1 + (( x - x0 + (J1/2))/lw)**2) + (1-a)*h_s*np.exp(-(x - x0 + (J1/2))**2/(2*lw**2))
+        Signal = S1 + S2
+        return Signal
+
+    def DoubletOfDoublet(self):
+        x = self.args[0]; x0 = self.args[1]; a = self.args[2]; h_s = self.args[3]; lw = self.args[4]; J1 = self.args[5]; J2 = self.args[6]
+        S1 = a * h_s  / ( 1 + (( x - x0 - ((J1+J2)/2))/lw)**2) + (1-a)*h_s*np.exp(-(x - x0 - ((J1+J2)/2))**2/(2*lw**2))
+        S2 = a * h_s  / ( 1 + (( x - x0 - ((J1-J2)/2))/lw)**2) + (1-a)*h_s*np.exp(-(x - x0 - ((J1-J2)/2))**2/(2*lw**2))
+        S3 = a * h_s  / ( 1 + (( x - x0 + ((J1+J2)/2))/lw)**2) + (1-a)*h_s*np.exp(-(x - x0 + ((J1+J2)/2))**2/(2*lw**2))
+        S4 = a * h_s  / ( 1 + (( x - x0 + ((J1-J2)/2))/lw)**2) + (1-a)*h_s*np.exp(-(x - x0 + ((J1-J2)/2))**2/(2*lw**2))
+        Signal = S1+S2+S3+S4
+        return Signal
+
+    def Triplet(self):
+        x = self.args[0]; x0 = self.args[1]; a = self.args[2]; h_s = self.args[3]; lw = self.args[4]; J1 = self.args[5]
+        S1 = a * h_s  / ( 1 + (( x - x0 - J1/2)/lw)**2) + (1-a)*h_s*np.exp(-(x - x0 - J1/2)**2/(2*lw**2))
+        S2 = a * 2* h_s  / ( 1 + (( x - x0 )/lw)**2) + (1-a)*2*h_s*np.exp(-(x - x0 )**2/(2*lw**2))
+        S3 = a * h_s  / ( 1 + (( x - x0 + J1/2)/lw)**2) + (1-a)*h_s*np.exp(-(x - x0 + J1/2)**2/(2*lw**2))
+        Signal = S1+S2+S3
+        return Signal
+    
+    def Quadruplet_2J(self):
+        x= self.args[0]; x0= self.args[1]; a= self.args[2]; h_s= self.args[3]; lw= self.args[4]; J1= self.args[5]; J2= self.args[6]
+        #Lorentzian + Gaussian
+        S1 = a * h_s  / ( 1 + (( x - x0 - J2/2)/lw)**2) + (1-a)*h_s*np.exp(-(x - x0 - J2/2)**2/(2*lw**2))
+        S2 = a * 3*h_s  / ( 1 + (( x - x0 - J1/2)/lw)**2) + (1-a)*3*h_s*np.exp(-(x - x0 - J1/2)**2/(2*lw**2))
+        S3 = a * 3*h_s  / ( 1 + (( x - x0 + J1/2)/lw)**2) + (1-a)*3*h_s*np.exp(-(x - x0 + J1/2)**2/(2*lw**2))
+        S4 = a * h_s  / ( 1 + (( x - x0 + J2/2)/lw)**2) + (1-a)*h_s*np.exp(-(x - x0 + J2/2)**2/(2*lw**2))
+        Signal = S1+S2+S3+S4
+        return Signal

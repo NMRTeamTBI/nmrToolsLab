@@ -3,13 +3,14 @@ import numpy as np
 import nmrglue as ng
 import matplotlib.pyplot as plt
 
+
 def cm2inch(*tupl):
     inch = 2.54
     if isinstance(tupl[0], tuple):
         return tuple(i/inch for i in tupl[0])
     else:
         return tuple(i/inch for i in tupl)
-        
+    
 def plot_nmr_spectra(
     data,
     udic,
@@ -22,7 +23,9 @@ def plot_nmr_spectra(
     spec_lim        =   None,
     rotate          =   False,
     pseudo2D        =   False,
-    detla_time      =   False
+    detla_time      =   False,
+    dot_plot        =   False,
+    marker_size     =   False
     ):
     #
     # put data into dataframe
@@ -37,6 +40,7 @@ def plot_nmr_spectra(
         ppm_window[k] = {}
 
     for k in range(ndim):
+
         uc_F = ng.fileiobase.uc_from_udic(udic, k)
         ppm = pd.Series(uc_F.ppm_scale())
 
@@ -114,7 +118,9 @@ def plot_nmr_spectra(
             ppm_window[0]['ppm'],
             data,
             color = plot_color,
-            linewidth=linewitdh_plot
+            linewidth= 0 if dot_plot is True else linewitdh_plot, 
+            marker = 'o' if dot_plot is True else None,
+            ms = marker_size if dot_plot is True else None,
             )
 
             plot_name.set_xlim(                                                      
