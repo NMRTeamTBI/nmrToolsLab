@@ -67,7 +67,7 @@ class Spectrum(object):
         # else: 
         #     self.time_scale = False
 
-    def plot_matplotlib(self, plot : bool = False, rotate : bool = False, linewidth : float = None, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None ):
+    def plot_matplotlib(self, plot : bool = False, rotate : bool = False, linewidth : float = None, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None, intensity_offset = None, ppm_offset = None):
         """
         XX
         """
@@ -109,9 +109,12 @@ class Spectrum(object):
             plot_name.set_ylim(bottom = max(self.ppm_window[0]['ppm']), top = min(self.ppm_window[0]['ppm']))
                     
         if ndim == 1:
+            intensity = self.intensity if intensity_offset is None else self.intensity+intensity_offset
+            ppm_scale = self.ppm_window[0]['ppm'] if ppm_offset is None else self.ppm_window[0]['ppm']+ppm_offset
+           
             plot_name.plot(
-                self.ppm_window[0]['ppm'] if rotate is False else self.intensity,
-                self.intensity if rotate is False else self.ppm_window[0]['ppm'],
+                ppm_scale if rotate is False else intensity,
+                intensity if rotate is False else ppm_scale,
                 c = plot_color,
                 lw = linewidth,
                 marker = marker if marker else None,
