@@ -5,10 +5,24 @@ Summary: Tools for NMR work within the lab
 Home-page: https://github.com/NMRTeamTBI/nmrToolsLab
 Author: Cyril Charlier
 Author-email: charlier@insa-toulouse.fr
-Project-URL: Bug Tracker, https://github.com/NMRTeamTBI/nmrToolsLab/issues
-Classifier: Programming Language :: Python :: 3
-Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
 Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
 Requires-Python: >=3.5
 Description-Content-Type: text/markdown
 License-File: LICENSE.txt
+Requires-Dist: pandas>=0.17.1
+Requires-Dist: scipy>=0.12.1
+Requires-Dist: nmrglue>=0.6
+Requires-Dist: numpy>=1.14.0
+Requires-Dist: plotly
+Requires-Dist: pybaselines>=1.0.0
+Requires-Dist: biopandas
+
+add long description here

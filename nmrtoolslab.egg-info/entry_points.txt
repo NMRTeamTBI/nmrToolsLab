@@ -1,2 +1,0 @@
-[console_scripts]
-nmrtoolslab = nmrtoolslab.__main__:main
