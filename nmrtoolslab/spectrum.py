@@ -130,9 +130,8 @@ class Spectrum(object):
             else:
                 plot_name.set_ylim(bottom = max(self.ppm_window[0]['ppm']), top = min(self.ppm_window[0]['ppm']))             
                 plot_name.set_ylabel(r'$^{'+str(label_info[0][0])+'}$'+str(label_info[0][1])+ ' (ppm)')
-
     
-    def plot_plotly(self, plot : bool = False, rotate : bool = False, linewidth : float = None, a : bool = False, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None ):
+    def plot_plotly(self, plot : bool = False, rotate : bool = False, linewidth : float = None, a : bool = False, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None , plot_legend = None,  intensity_offset = None, ppm_offset = None):
  
         # create label axis from universal dictionnary
         label_info = proc.experiment_label(self.udic)
@@ -144,7 +143,10 @@ class Spectrum(object):
         plot_color = 'blue' if color is None else color
         linewidth = 0.5 if linewidth is None else linewidth
 
-        fig = make_subplots(rows=1, cols=1)
+        if plot is False:
+            fig = make_subplots(rows=1, cols=1)
+        else:
+            fig = plot
 
         # only for plotly
         if isinstance(self.intensity, pd.DataFrame):
@@ -152,14 +154,20 @@ class Spectrum(object):
         else:
             intensity_2_plot = self.intensity
 
+
+
         if ndim ==1:
+
+            intensity = intensity_2_plot if intensity_offset is None else intensity_2_plot+intensity_offset
+            ppm_scale = self.ppm_window[0]['ppm'] if ppm_offset is None else self.ppm_window[0]['ppm']+ppm_offset
 
             mode = 'markers' if marker else 'lines'
             fig_exp = go.Scatter(
-                x=self.ppm_window[0]['ppm'] if rotate is False else intensity_2_plot, 
-                y=intensity_2_plot if rotate is False else self.ppm_window[0]['ppm'], 
+                x=ppm_scale if rotate is False else intensity, 
+                y=intensity if rotate is False else ppm_scale, 
                 mode=mode, 
-                name='exp. spectrum', 
+                name = None if plot_legend is None else plot_legend, 
+                showlegend=False if plot_legend is None else True,
                 marker_color=plot_color
                 )
             fig.update_layout(xaxis=dict(title='chemical shift (ppm)'))
