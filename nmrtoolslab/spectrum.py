@@ -155,8 +155,7 @@ class Spectrum(object):
             intensity_2_plot = self.intensity
 
 
-
-        if ndim ==1:
+        if ndim == 1:
 
             intensity = intensity_2_plot if intensity_offset is None else intensity_2_plot+intensity_offset
             ppm_scale = self.ppm_window[0]['ppm'] if ppm_offset is None else self.ppm_window[0]['ppm']+ppm_offset
@@ -180,4 +179,39 @@ class Spectrum(object):
             # fig.update_xaxes(autorange=False, range=[np.max(self.ppm), np.min(self.ppm)])
         fig.update_traces(line={'width': linewidth})
 
+        if ndim == 2:
+
+            intensity = intensity_2_plot
+
+            lowest_contour = 1e9 if lowest_contour is None else lowest_contour
+            contour_factor = 1.5 if contour_factor is None  else contour_factor
+            n_contour = 10 if n_contour is None  else n_contour
+
+            cl = [lowest_contour * contour_factor ** x for x in range(n_contour)] 
+
+            print(lowest_contour,contour_factor,n_contour,cl)
+            exit()
+            fig_exp = go.Contour(
+                z=intensity,
+                x=self.ppm_window[1]['ppm'],
+                y=self.ppm_window[0]['ppm'],
+
+                line_width=2,
+                # line=list(width=2,color='blue'),
+                contours=dict(
+                    coloring='none',
+                    lowest_contour=2e9,
+                    # end=3e9,
+                    # color='blue'
+                    
+                    size=cl,
+                    )
+            )
+            fig.add_trace(fig_exp, row=1, col=1)
+            fig.update_layout(
+                xaxis = dict(autorange="reversed"),
+                yaxis = dict(autorange="reversed")
+                )
+            
+            print('ehhlooo')
         return fig
