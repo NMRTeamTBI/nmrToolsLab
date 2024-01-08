@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
+import numpy as np
 
 import nmrtoolslab.processing_2 as proc
 
@@ -42,11 +43,12 @@ class Spectrum(object):
         self.intensity = pd.DataFrame(self.intensity)
         
         # create masks based on ppm values and select ppm windows
+       
         for k in list(self.ppm_window.keys()):
             mask = (self.ppm_window[k]['ppm'] >= min(spec_lim[k][0],spec_lim[k][1])) & (self.ppm_window[k]['ppm'] <= max(spec_lim[k][0],spec_lim[k][1]))
             self.ppm_window[k]['mask'] = mask
             self.ppm_window[k]['ppm'] = self.ppm_window[k]['ppm'][mask]
-
+ 
         # select data based on ppm selection
         if len(list(self.ppm_window.keys())) == 2:
             self.intensity = self.intensity.loc[self.ppm_window[0]['mask'],self.ppm_window[1]['mask']] 
@@ -181,16 +183,19 @@ class Spectrum(object):
 
         if ndim == 2:
 
-            intensity = intensity_2_plot
+            intensity = intensity_2_plot/np.max(intensity_2_plot)
 
             lowest_contour = 1e9 if lowest_contour is None else lowest_contour
             contour_factor = 1.5 if contour_factor is None  else contour_factor
             n_contour = 10 if n_contour is None  else n_contour
 
+            print(intensity)
+
             cl = [lowest_contour * contour_factor ** x for x in range(n_contour)] 
 
-            print(lowest_contour,contour_factor,n_contour,cl)
-            exit()
+            # print(lowest_contour,contour_factor,n_contour,cl)
+            # exit()
+
             fig_exp = go.Contour(
                 z=intensity,
                 x=self.ppm_window[1]['ppm'],
@@ -200,11 +205,11 @@ class Spectrum(object):
                 # line=list(width=2,color='blue'),
                 contours=dict(
                     coloring='none',
-                    lowest_contour=2e9,
-                    # end=3e9,
+                    start=0,
+                    end=1,
                     # color='blue'
                     
-                    size=cl,
+                    size=0.9,
                     )
             )
             fig.add_trace(fig_exp, row=1, col=1)
