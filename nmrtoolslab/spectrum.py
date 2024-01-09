@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
-
+import copy
 import nmrtoolslab.processing_2 as proc
 
 
@@ -25,10 +25,14 @@ class Spectrum(object):
         # self.pseudo2D = False 
 
         # load NMR data with user selected window
-        self.intensity, dic, self.udic = proc.read_topspin_data(self.data_path,self.dataset,self.expno,self.procno)
+        self.complete_intensity, dic, self.udic = proc.read_topspin_data(self.data_path,self.dataset,self.expno,self.procno)
         
         # calculate ppms if no spec_lim is provided
-        self.ppm_window = proc.get_ppm_list(self.udic)
+        self.complete_ppm_window = proc.get_ppm_list(self.udic)
+
+        # create copies for multuple window selection
+        self.intensity = copy.deepcopy(self.complete_intensity)
+        self.ppm_window = copy.deepcopy(self.complete_ppm_window)
 
         # #select data if needed
         if 'spec_lim' in dataset:        
@@ -38,14 +42,22 @@ class Spectrum(object):
             spec_lim = None
 
     def reduce_spectral_window(self,spec_lim):
-            
+
+        if np.array_equal(self.intensity,self.complete_intensity) is True:
+            pass
+        else:
+            self.intensity = copy.deepcopy(self.complete_intensity)
+            self.ppm_window = copy.deepcopy(self.complete_ppm_window)
+
         # put data into dataframe
         self.intensity = pd.DataFrame(self.intensity)
         
         # create masks based on ppm values and select ppm windows
        
         for k in list(self.ppm_window.keys()):
+            print(k)
             mask = (self.ppm_window[k]['ppm'] >= min(spec_lim[k][0],spec_lim[k][1])) & (self.ppm_window[k]['ppm'] <= max(spec_lim[k][0],spec_lim[k][1]))
+            print(mask)
             self.ppm_window[k]['mask'] = mask
             self.ppm_window[k]['ppm'] = self.ppm_window[k]['ppm'][mask]
  
