@@ -55,9 +55,7 @@ class Spectrum(object):
         # create masks based on ppm values and select ppm windows
        
         for k in list(self.ppm_window.keys()):
-            print(k)
             mask = (self.ppm_window[k]['ppm'] >= min(spec_lim[k][0],spec_lim[k][1])) & (self.ppm_window[k]['ppm'] <= max(spec_lim[k][0],spec_lim[k][1]))
-            print(mask)
             self.ppm_window[k]['mask'] = mask
             self.ppm_window[k]['ppm'] = self.ppm_window[k]['ppm'][mask]
  
