@@ -152,13 +152,16 @@ class Spectrum(object):
 
         # only for plotly
         if isinstance(self.intensity, pd.DataFrame):
-            intensity_2_plot = self.intensity.iloc[:,0].to_numpy()
+            if ndim == 1:
+                intensity_2_plot = self.intensity.iloc[:,0].to_numpy()
+            if ndim == 2:
+                intensity_2_plot=self.intensity.to_numpy()
+
         else:
             intensity_2_plot = self.intensity
 
-
         if ndim == 1:
-
+            
             intensity = intensity_2_plot if intensity_offset is None else intensity_2_plot+intensity_offset
             ppm_scale = self.ppm_window[0]['ppm'] if ppm_offset is None else self.ppm_window[0]['ppm']+ppm_offset
 
@@ -182,20 +185,20 @@ class Spectrum(object):
         fig.update_traces(line={'width': linewidth})
 
         if ndim == 2:
-
-            intensity = intensity_2_plot/np.max(intensity_2_plot)
+            print("###---###")
+            print('2D plots with plotly is not supported yet. Use plot_matplolib instead.')
+            print('###---###')
+            quit()
+            intensity = intensity_2_plot
 
             lowest_contour = 1e9 if lowest_contour is None else lowest_contour
             contour_factor = 1.5 if contour_factor is None  else contour_factor
             n_contour = 10 if n_contour is None  else n_contour
 
-            print(intensity)
 
             cl = [lowest_contour * contour_factor ** x for x in range(n_contour)] 
 
-            # print(lowest_contour,contour_factor,n_contour,cl)
-            # exit()
-
+            
             fig_exp = go.Contour(
                 z=intensity,
                 x=self.ppm_window[1]['ppm'],
@@ -205,11 +208,10 @@ class Spectrum(object):
                 # line=list(width=2,color='blue'),
                 contours=dict(
                     coloring='none',
-                    start=0,
-                    end=1,
-                    # color='blue'
+                    start=6e8,
+                    end=1e11,
                     
-                    size=0.9,
+                    size=3e9,
                     )
             )
             fig.add_trace(fig_exp, row=1, col=1)
@@ -218,5 +220,4 @@ class Spectrum(object):
                 yaxis = dict(autorange="reversed")
                 )
             
-            print('ehhlooo')
         return fig
