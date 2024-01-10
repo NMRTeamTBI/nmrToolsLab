@@ -142,6 +142,8 @@ class Spectrum(object):
             else:
                 plot_name.set_ylim(bottom = max(self.ppm_window[0]['ppm']), top = min(self.ppm_window[0]['ppm']))             
                 plot_name.set_ylabel(r'$^{'+str(label_info[0][0])+'}$'+str(label_info[0][1])+ ' (ppm)')
+                plot_name.spines[['top','right','bottom']].set_visible(False)
+                plot_name.tick_params(labelleft=True,left=True,labelright=False,right=False,labelbottom=False,bottom=False)
     
     def plot_plotly(self, plot : bool = False, rotate : bool = False, linewidth : float = None, a : bool = False, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None , plot_legend = None,  intensity_offset = None, ppm_offset = None):
  
