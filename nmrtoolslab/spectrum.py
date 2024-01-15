@@ -108,18 +108,25 @@ class Spectrum(object):
             cl = [lowest_contour * contour_factor ** x for x in range(n_contour)]    
 
             plot_name.contour(
-                self.intensity,
+                self.intensity if rotate is False else np.transpose(self.intensity),
                 cl,
                 colors = plot_color,
                 linewidths=linewidth,
-                extent=(max(self.ppm_window[1]['ppm']),min(self.ppm_window[1]['ppm']),max(self.ppm_window[0]['ppm']),min(self.ppm_window[0]['ppm']),)
+                extent=(max(self.ppm_window[1]['ppm']),min(self.ppm_window[1]['ppm']),max(self.ppm_window[0]['ppm']),min(self.ppm_window[0]['ppm']),) if rotate is False else (max(self.ppm_window[0]['ppm']),min(self.ppm_window[0]['ppm']),max(self.ppm_window[1]['ppm']),min(self.ppm_window[1]['ppm']),)
             )
-            plot_name.set_ylabel(r'$^{'+str(label_info[0][0])+'}$'+str(label_info[0][1])+ ' (ppm)')        
-            plot_name.set_xlabel(r'$^{'+str(label_info[1][0])+'}$'+str(label_info[1][1])+ ' (ppm)')        
+            if rotate is False:
+                plot_name.set_ylabel(r'$^{'+str(label_info[0][0])+'}$'+str(label_info[0][1])+ ' (ppm)')        
+                plot_name.set_xlabel(r'$^{'+str(label_info[1][0])+'}$'+str(label_info[1][1])+ ' (ppm)')        
+                plot_name.set_xlim(left = max(self.ppm_window[1]['ppm']), right = min(self.ppm_window[1]['ppm']))
+                plot_name.set_ylim(bottom = max(self.ppm_window[0]['ppm']), top = min(self.ppm_window[0]['ppm']))
 
-            plot_name.set_xlim(left = max(self.ppm_window[1]['ppm']), right = min(self.ppm_window[1]['ppm']))
-            plot_name.set_ylim(bottom = max(self.ppm_window[0]['ppm']), top = min(self.ppm_window[0]['ppm']))
-                    
+
+            if rotate is True:
+                plot_name.set_xlabel(r'$^{'+str(label_info[0][0])+'}$'+str(label_info[0][1])+ ' (ppm)')        
+                plot_name.set_ylabel(r'$^{'+str(label_info[1][0])+'}$'+str(label_info[1][1])+ ' (ppm)')        
+                plot_name.set_ylim(bottom = max(self.ppm_window[1]['ppm']), top = min(self.ppm_window[1]['ppm']))
+                plot_name.set_xlim(left = max(self.ppm_window[0]['ppm']), right = min(self.ppm_window[0]['ppm']))
+
         if ndim == 1:
             intensity = self.intensity if intensity_offset is None else self.intensity+intensity_offset
             ppm_scale = self.ppm_window[0]['ppm'] if ppm_offset is None else self.ppm_window[0]['ppm']+ppm_offset
