@@ -2,6 +2,7 @@ from pathlib import Path
 import nmrglue as ng
 import pandas as pd
 import numpy as np
+import os 
 import matplotlib.pyplot as plt
 from pybaselines import Baseline
 # baseline from
@@ -48,6 +49,49 @@ def read_topspin_data(data_path, dataset, expno, procno, scale_data=True):
 
     return data, dic, udic
 
+def read_ucsf_file(data_path, file_name, dimensions):
+    """
+    Loading sparky NMR data
+
+    Parameters
+    __________
+    data_path : path
+        path to the data folder.
+    file_name : file_name  
+        name of the data folder without ucsf
+    dimensions : dimensions  
+        Number of dimensions of the experiment
+
+    Return
+    __________
+    dic : dictionnary   
+        dictionnary
+    data : 2D ndarray
+        Array NMR data
+    udic : universal dictionnary
+        universal dictionnary
+    """
+    
+    full_path = Path(data_path, file_name+str('.ucsf'))
+
+    if os.path.isfile(full_path):
+        pass
+    else:
+        print('The datapath is incorrect')
+        exit()
+
+    if dimensions in ['2D',2]:
+        dic, data = ng.fileio.sparky.read_2D(full_path)
+    elif dimensions in ['3D',3]:
+        dic, data = ng.fileio.sparky.read_3D(full_path)
+    else:
+        print('The dimension is incorrect. Only 2D, 2, 3D or 3 are supported')
+        exit()
+    
+    udic = ng.fileio.sparky.guess_udic(dic, data)
+
+    return data, dic, udic
+    
 def experiment_label(udic):
     label_info = {}
     for k in range(udic['ndim']):
