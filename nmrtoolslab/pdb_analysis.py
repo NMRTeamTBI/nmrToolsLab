@@ -2,12 +2,15 @@ from biopandas.pdb import PandasPdb
 from pathlib import Path
 
 class pdb_analysis(object):
+
     def __init__(self,pdb_file_code=False,pdb_path=False, output_path=False):
         self.pdb_file_code = pdb_file_code
         self.pdb_path = pdb_path
         self.output_path = output_path
 
-    # self.load_pdb()
+        self.pdf_file = False
+
+        self.load_pdb()
 
     def load_pdb(self):
         ppdb = PandasPdb()
@@ -18,18 +21,31 @@ class pdb_analysis(object):
         elif self.pdb_path is False:
             print('pdb file fetched from the database')
             try:
-                pdb_file = ppdb.fetch_pdb(self.pdb_file_code)
+                self.pdf_file = ppdb.fetch_pdb(self.pdb_file_code)
             except:
                 print('Error -- please check the pdb code provided')
                 exit()
         else: 
             try:
                 filename = Path(self.pdb_path,self.pdb_file_code+'.pdb')
-                pdb_file = ppdb.read_pdb(str(filename))
+                self.pdf_file = ppdb.read_pdb(str(filename))
             except: 
                 print('Error -- please check the pdb code and/or path')
                 exit()
-        return pdb_file
+
+
+    def clean_pdb(self):
+        """
+        Function to remove unecessary columns
+        """
+        self.pdb_file = self.pdf_file.df['ATOM']        
+        self.pdb_file = self.pdb_file[['atom_name','residue_name','residue_number','x_coord','y_coord','z_coord' ]]
+
+    # def distances(self):
+    #     self.clean_pdb()
+    #     test = self.pdb_file.loc[(self.pdb_file['residue_name'] == 'ASP')]
+        
+        #&('residue_number'==36),:
 
     def mutation(self, ref_residue=False, reslist=False):
 
