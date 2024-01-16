@@ -17,16 +17,28 @@ class Spectrum(object):
         # self.udic = udic 
         # self.selected_data = False
 
-        # set spectrum-related attributes
-        self.data_path = dataset["data_path"]
-        self.dataset = dataset["dataset"]
-        self.expno = dataset["expno"]
-        self.procno = dataset["procno"]
-        # self.pseudo2D = False 
+        if dataset["sparky"]:
+            self.sparky = True
+            self.data_path = dataset["data_path"]
+            self.file_name = dataset["file_name"]
+            self.dimensions = dataset["dimensions"]
 
-        # load NMR data with user selected window
-        self.complete_intensity, dic, self.udic = proc.read_topspin_data(self.data_path,self.dataset,self.expno,self.procno)
-        
+            # load NMR data with user selected window
+            self.complete_intensity, dic, self.udic = proc.read_ucsf_file(self.data_path,self.file_name,self.dimensions)
+            self.exp_dim = {i:self.udic[i]['label'] for i in range(self.udic['ndim'])}
+   
+        else:
+            # set spectrum-related attributes
+            self.data_path = dataset["data_path"]
+            self.dataset = dataset["dataset"]
+            self.expno = dataset["expno"]
+            self.procno = dataset["procno"]
+            # self.pseudo2D = False 
+
+            # load NMR data with user selected window
+            self.complete_intensity, dic, self.udic = proc.read_topspin_data(self.data_path,self.dataset,self.expno,self.procno)
+
+
         # calculate ppms if no spec_lim is provided
         self.complete_ppm_window = proc.get_ppm_list(self.udic)
 
@@ -34,16 +46,19 @@ class Spectrum(object):
         self.intensity = copy.deepcopy(self.complete_intensity)
         self.ppm_window = copy.deepcopy(self.complete_ppm_window)
 
+
         # #select data if needed
         if 'spec_lim' in dataset:        
             spec_lim = dataset['spec_lim'] #if 'spec_lim' in dataset else None
             self.reduce_spectral_window(spec_lim=spec_lim)
         else:
             spec_lim = None
-
+        
     def reduce_spectral_window(self,spec_lim):
 
         if np.array_equal(self.intensity,self.complete_intensity) is True:
+            pass
+        if self.sparky:
             pass
         else:
             self.intensity = copy.deepcopy(self.complete_intensity)
@@ -78,6 +93,42 @@ class Spectrum(object):
         #     self.time_scale = np.arange(0,len(self.ppm_window)+1,1)*self.detla_time
         # else: 
         #     self.time_scale = False
+
+    def plane_selection_3D(self, plane : str = None, shift : float = None):
+
+        if plane not in ['13C-1H']:
+            print('data dimensions :' + str(self.exp_dim))
+            print('Please select a plane')
+
+        if not shift:
+            print('Please provide a chemical shift for plane extraction')
+
+        x = plane.split('-')
+
+        exp_dim_idx = list(self.exp_dim.keys())
+        exp_dim_list = list(self.exp_dim.values())
+
+        plane_dim_idx = [exp_dim_list.index(x[i]) for i in range(len(x))]
+
+        shift_dim_idx = [x for x in exp_dim_idx if x not in set(plane_dim_idx)]
+        
+        df = self.ppm_window[shift_dim_idx[0]]
+        df_sel = df['ppm'].iloc[(df['ppm']-shift).abs().argsort()[:1]]
+        
+        idx, ppm_val = df_sel.index[0].tolist(),df_sel.iloc[0].tolist()
+        
+        if shift_dim_idx[0] == 0:
+            self.intensity = self.intensity[idx,:,:]
+            del self.ppm_window[0]
+            # self.ppm_window[0] = self.intensity.pop(1)
+
+        elif shift_dim_idx[0] == 1:
+            self.intensity = self.intensity[:,idx,:]
+            self.ppm_window[1] = self.ppm_window.pop(2)
+
+        elif shift_dim_idx[0] == 2:
+            self.intensity = self.intensity[:,:,idx]
+            del self.ppm_window[2]
 
     def plot_matplotlib(self, plot : bool = False, rotate : bool = False, linewidth : float = None, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None, intensity_offset = None, ppm_offset = None):
         """
