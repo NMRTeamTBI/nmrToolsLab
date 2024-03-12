@@ -15,7 +15,7 @@ class Spectrum(object):
     def __init__(self, dataset : dict = None):
         # self.data = data 
         # self.udic = udic 
-        # self.selected_data = False
+        # self.se`  lected_data = False
 
         if dataset["sparky"]:
             self.sparky = True
@@ -28,6 +28,7 @@ class Spectrum(object):
             self.exp_dim = {i:self.udic[i]['label'] for i in range(self.udic['ndim'])}
    
         else:
+            self.sparky = False
             # set spectrum-related attributes
             self.data_path = dataset["data_path"]
             self.dataset = dataset["dataset"]
@@ -53,12 +54,15 @@ class Spectrum(object):
             self.reduce_spectral_window(spec_lim=spec_lim)
         else:
             spec_lim = None
-        
+
+    def change_data_sign(self):
+        self.intensity = self.intensity * (-1)   
+
     def reduce_spectral_window(self,spec_lim):
 
         if np.array_equal(self.intensity,self.complete_intensity) is True:
             pass
-        if self.sparky:
+        if self.sparky is True:
             pass
         else:
             self.intensity = copy.deepcopy(self.complete_intensity)
@@ -125,10 +129,47 @@ class Spectrum(object):
         elif shift_dim_idx[0] == 1:
             self.intensity = self.intensity[:,idx,:]
             self.ppm_window[1] = self.ppm_window.pop(2)
+            del self.exp_dim[1]
 
         elif shift_dim_idx[0] == 2:
             self.intensity = self.intensity[:,:,idx]
             del self.ppm_window[2]
+        
+    def slice_selection_2D(self, slice : str = None, shift : float = None):
+
+        if slice not in ['13C','1H','15N']:
+            print('data dimensions :' + str(self.exp_dim))
+            print('Please select a plane')
+
+        if not shift:
+            print('Please provide a chemical shift for slice extraction')
+
+        exp_dim_idx = list(self.exp_dim.keys())
+        exp_dim_list = list(self.exp_dim.values())
+
+        slice_dim_idx = exp_dim_list.index(slice)
+
+        df = self.ppm_window[1 if slice_dim_idx ==0 else 0]
+        df['ppm'] = df['ppm'].reset_index(drop=True)
+        df_sel = df['ppm'].iloc[(df['ppm']-shift).abs().argsort()[:1]]
+
+        idx, ppm_val = df_sel.index[0].tolist(),df_sel.iloc[0].tolist()
+
+        if isinstance(self.intensity, pd.DataFrame):
+            self.intensity = self.intensity.to_numpy()
+
+        if slice_dim_idx == 0:
+            self.intensity = self.intensity[:,idx]
+            del self.ppm_window[1] 
+
+        if slice_dim_idx == 1:
+            self.intensity = self.intensity[:,idx]
+            self.ppm_window = self.ppm_window[0] 
+            print('to be fixed')
+            exit()
+
+            # self.exp_dim = self.exp_dim[slice_dim_idx]
+            # print(self.exp_dim)
 
     def plot_matplotlib(self, plot : bool = False, rotate : bool = False, linewidth : float = None, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None, intensity_offset = None, ppm_offset = None):
         """
@@ -181,7 +222,7 @@ class Spectrum(object):
         if ndim == 1:
             intensity = self.intensity if intensity_offset is None else self.intensity+intensity_offset
             ppm_scale = self.ppm_window[0]['ppm'] if ppm_offset is None else self.ppm_window[0]['ppm']+ppm_offset
-           
+
             plot_name.plot(
                 ppm_scale if rotate is False else intensity,
                 intensity if rotate is False else ppm_scale,
