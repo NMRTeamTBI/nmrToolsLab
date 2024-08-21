@@ -695,6 +695,75 @@ class data_consolidation(object):
 
         self.consolidated_data = pd.DataFrame(general_table,columns=['ass',self.data_type,'Height','res_type'])
 
+class pressure_fitting(object):
+    def __init__(self,data,res,nucleus):
+        self.data = data 
+        self.res = res
+        self.nucleus = nucleus
+
+        self.params = []
+        self.err_params = []
+        self.shift = []
+        self.pressure_pts = []
+
+        self.data_selection()
+
+    def data_selection(self):
+        selected_data = self.data[(self.data.ass==self.res)&(self.data.nucleus==self.nucleus)]
+        self.pressure_pts =  selected_data.loc[:,'pressure'].tolist()
+        self.shift =  selected_data.loc[:,'shift'].tolist()
+
+    def linear_model(sefl,a,b1,b2,P):
+        return a + b1*P +b2*P**2
+
+    # def non_linear_model(sefl,B1,B2,d0,p,p0):
+    #     # d0 describes the chemical shift at atmospheric pressure P0 (0.1 MPa).
+    #     # p0 describes the atmospheric pressure.
+    #     # B1 describes the linear part of the chemical shift change with pressure 
+    #     # B2 describes the nonlinearity and therefore the curvature of the pressure dependence.
+        
+    #     return d0 + B1*(p-p0)+ B2(p-p0)**2
+
+    def fit(self):
+        popt, pcov = curve_fit(lambda P, a, b1, b2 : self.linear_model(a,b1, b2,P), self.pressure_pts, self.shift)
+        self.params = popt
+        self.err_params = [pcov[0,0]**0.5,pcov[1,1]**0.5]
+
+    def plot(self, fit: bool = False, plot:bool = False, color:bool = False):
+        if plot is False:
+            fig, ax = plt.subplots()
+            plot = ax
+
+
+        #Experimental data
+        plot.plot(
+            self.pressure_pts,
+            self.shift, 
+            ls='none',
+            marker='o',
+            color="b" if color is False else color
+            )
+
+        #Fitted Curve
+        if fit:
+            pressure_sim = np.linspace(min(self.pressure_pts),max(self.pressure_pts)+1,100)    
+            simulated_curve = self.linear_model(self.params[0],self.params[1],pressure_sim)
+
+            plot.plot(
+                pressure_sim, 
+                simulated_curve, 
+                ls='-', 
+                color="b" if color is False else color
+                )
+        plot.set_ylabel(r'I/I$_{0}$')
+        plot.set_xlabel('pressure (bar)')
+        plot.set_title(self.res)
+
+        if plot is False:
+            return plot
+        else:
+            pass
+
 class temperature_fitting(object):
     def __init__(self,data,res,nucleus):
         self.data = data 
@@ -718,7 +787,6 @@ class temperature_fitting(object):
         return a + b*T
 
     def fit(self):
-
         popt, pcov = curve_fit(lambda T, a, b : self.linear_model(a,b,T), self.temperature_pts, self.shift)
         self.params = popt
         self.err_params = [pcov[0,0]**0.5,pcov[1,1]**0.5]
@@ -967,12 +1035,12 @@ class pKA_fitting(object):
         if self.new_params:
             for i in self.new_params.keys():
                 for k in self.new_params[i].keys():
-                    self.params.loc[self.params.par==i,k] = self.new_params[i][k]
+                    self.params.loc[self.params.par==i,k] = int(self.new_params[i][k])
 
     def func(self,pH,params):
         #Henderson Hasselback with 1pkA
         if self.model == 1:
-            d = params[1]+(params[2]-params[1])/(1+10**(params[0]-pH)) 
+            d = params[1]+(params[2]-params[1])/(1+10**(pH-params[0])) 
         #Henderson Hasselback with 2pkA        
         if self.model == 2:
             d = params[0]+(params[1]-params[0])/(1+10**(pH-params[2]))+(params[3]-params[0])/(1+10**(pH-params[4]))                 

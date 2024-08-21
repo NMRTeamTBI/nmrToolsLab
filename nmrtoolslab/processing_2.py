@@ -89,7 +89,6 @@ def read_ucsf_file(data_path, file_name, dimensions):
         exit()
     
     udic = ng.fileio.sparky.guess_udic(dic, data)
-
     return data, dic, udic
     
 def experiment_label(udic):

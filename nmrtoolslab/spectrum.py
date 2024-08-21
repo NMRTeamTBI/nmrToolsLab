@@ -31,13 +31,13 @@ class Spectrum(object):
             self.sparky = False
             # set spectrum-related attributes
             self.data_path = dataset["data_path"]
-            self.dataset = dataset["dataset"]
+            self.data_folder = dataset["data_folder"]
             self.expno = dataset["expno"]
             self.procno = dataset["procno"]
             # self.pseudo2D = False 
 
             # load NMR data with user selected window
-            self.complete_intensity, dic, self.udic = proc.read_topspin_data(self.data_path,self.dataset,self.expno,self.procno)
+            self.complete_intensity, dic, self.udic = proc.read_topspin_data(self.data_path,self.data_folder,self.expno,self.procno)
 
 
         # calculate ppms if no spec_lim is provided
@@ -57,6 +57,10 @@ class Spectrum(object):
 
     def change_data_sign(self):
         self.intensity = self.intensity * (-1)   
+
+    def apply_st_sparky(self,dim,st):
+        self.ppm_window[dim]['ppm'] = self.ppm_window[dim]['ppm']+st 
+
 
     def reduce_spectral_window(self,spec_lim):
 
@@ -100,12 +104,14 @@ class Spectrum(object):
 
     def plane_selection_3D(self, plane : str = None, shift : float = None):
 
-        if plane not in ['13C-1H']:
+        if plane not in ['13C-1H','1H-1H','15N-1H']:
             print('data dimensions :' + str(self.exp_dim))
             print('Please select a plane')
+            exit()
 
         if not shift:
             print('Please provide a chemical shift for plane extraction')
+            exit()
 
         x = plane.split('-')
 

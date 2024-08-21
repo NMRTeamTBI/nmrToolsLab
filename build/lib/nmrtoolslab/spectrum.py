@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
-
+import numpy as np
+import copy
 import nmrtoolslab.processing_2 as proc
 
 
@@ -14,20 +15,38 @@ class Spectrum(object):
     def __init__(self, dataset : dict = None):
         # self.data = data 
         # self.udic = udic 
-        # self.selected_data = False
+        # self.se`  lected_data = False
 
-        # set spectrum-related attributes
-        self.data_path = dataset["data_path"]
-        self.dataset = dataset["dataset"]
-        self.expno = dataset["expno"]
-        self.procno = dataset["procno"]
-        # self.pseudo2D = False 
+        if dataset["sparky"]:
+            self.sparky = True
+            self.data_path = dataset["data_path"]
+            self.file_name = dataset["file_name"]
+            self.dimensions = dataset["dimensions"]
 
-        # load NMR data with user selected window
-        self.intensity, dic, self.udic = proc.read_topspin_data(self.data_path,self.dataset,self.expno,self.procno)
-        
+            # load NMR data with user selected window
+            self.complete_intensity, dic, self.udic = proc.read_ucsf_file(self.data_path,self.file_name,self.dimensions)
+            self.exp_dim = {i:self.udic[i]['label'] for i in range(self.udic['ndim'])}
+   
+        else:
+            self.sparky = False
+            # set spectrum-related attributes
+            self.data_path = dataset["data_path"]
+            self.data_folder = dataset["data_folder"]
+            self.expno = dataset["expno"]
+            self.procno = dataset["procno"]
+            # self.pseudo2D = False 
+
+            # load NMR data with user selected window
+            self.complete_intensity, dic, self.udic = proc.read_topspin_data(self.data_path,self.data_folder,self.expno,self.procno)
+
+
         # calculate ppms if no spec_lim is provided
-        self.ppm_window = proc.get_ppm_list(self.udic)
+        self.complete_ppm_window = proc.get_ppm_list(self.udic)
+
+        # create copies for multuple window selection
+        self.intensity = copy.deepcopy(self.complete_intensity)
+        self.ppm_window = copy.deepcopy(self.complete_ppm_window)
+
 
         # #select data if needed
         if 'spec_lim' in dataset:        
@@ -36,17 +55,29 @@ class Spectrum(object):
         else:
             spec_lim = None
 
+    def change_data_sign(self):
+        self.intensity = self.intensity * (-1)   
+
     def reduce_spectral_window(self,spec_lim):
-            
+
+        if np.array_equal(self.intensity,self.complete_intensity) is True:
+            pass
+        if self.sparky is True:
+            pass
+        else:
+            self.intensity = copy.deepcopy(self.complete_intensity)
+            self.ppm_window = copy.deepcopy(self.complete_ppm_window)
+
         # put data into dataframe
         self.intensity = pd.DataFrame(self.intensity)
         
         # create masks based on ppm values and select ppm windows
+       
         for k in list(self.ppm_window.keys()):
             mask = (self.ppm_window[k]['ppm'] >= min(spec_lim[k][0],spec_lim[k][1])) & (self.ppm_window[k]['ppm'] <= max(spec_lim[k][0],spec_lim[k][1]))
             self.ppm_window[k]['mask'] = mask
             self.ppm_window[k]['ppm'] = self.ppm_window[k]['ppm'][mask]
-
+ 
         # select data based on ppm selection
         if len(list(self.ppm_window.keys())) == 2:
             self.intensity = self.intensity.loc[self.ppm_window[0]['mask'],self.ppm_window[1]['mask']] 
@@ -67,7 +98,80 @@ class Spectrum(object):
         # else: 
         #     self.time_scale = False
 
-    def plot_matplotlib(self, plot : bool = False, rotate : bool = False, linewidth : float = None, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None ):
+    def plane_selection_3D(self, plane : str = None, shift : float = None):
+
+        if plane not in ['13C-1H']:
+            print('data dimensions :' + str(self.exp_dim))
+            print('Please select a plane')
+
+        if not shift:
+            print('Please provide a chemical shift for plane extraction')
+
+        x = plane.split('-')
+
+        exp_dim_idx = list(self.exp_dim.keys())
+        exp_dim_list = list(self.exp_dim.values())
+
+        plane_dim_idx = [exp_dim_list.index(x[i]) for i in range(len(x))]
+
+        shift_dim_idx = [x for x in exp_dim_idx if x not in set(plane_dim_idx)]
+        
+        df = self.ppm_window[shift_dim_idx[0]]
+        df_sel = df['ppm'].iloc[(df['ppm']-shift).abs().argsort()[:1]]
+        
+        idx, ppm_val = df_sel.index[0].tolist(),df_sel.iloc[0].tolist()
+        
+        if shift_dim_idx[0] == 0:
+            self.intensity = self.intensity[idx,:,:]
+            del self.ppm_window[0]
+            # self.ppm_window[0] = self.intensity.pop(1)
+
+        elif shift_dim_idx[0] == 1:
+            self.intensity = self.intensity[:,idx,:]
+            self.ppm_window[1] = self.ppm_window.pop(2)
+            del self.exp_dim[1]
+
+        elif shift_dim_idx[0] == 2:
+            self.intensity = self.intensity[:,:,idx]
+            del self.ppm_window[2]
+        
+    def slice_selection_2D(self, slice : str = None, shift : float = None):
+
+        if slice not in ['13C','1H','15N']:
+            print('data dimensions :' + str(self.exp_dim))
+            print('Please select a plane')
+
+        if not shift:
+            print('Please provide a chemical shift for slice extraction')
+
+        exp_dim_idx = list(self.exp_dim.keys())
+        exp_dim_list = list(self.exp_dim.values())
+
+        slice_dim_idx = exp_dim_list.index(slice)
+
+        df = self.ppm_window[1 if slice_dim_idx ==0 else 0]
+        df['ppm'] = df['ppm'].reset_index(drop=True)
+        df_sel = df['ppm'].iloc[(df['ppm']-shift).abs().argsort()[:1]]
+
+        idx, ppm_val = df_sel.index[0].tolist(),df_sel.iloc[0].tolist()
+
+        if isinstance(self.intensity, pd.DataFrame):
+            self.intensity = self.intensity.to_numpy()
+
+        if slice_dim_idx == 0:
+            self.intensity = self.intensity[:,idx]
+            del self.ppm_window[1] 
+
+        if slice_dim_idx == 1:
+            self.intensity = self.intensity[:,idx]
+            self.ppm_window = self.ppm_window[0] 
+            print('to be fixed')
+            exit()
+
+            # self.exp_dim = self.exp_dim[slice_dim_idx]
+            # print(self.exp_dim)
+
+    def plot_matplotlib(self, plot : bool = False, rotate : bool = False, linewidth : float = None, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None, intensity_offset = None, ppm_offset = None):
         """
         XX
         """
@@ -96,22 +200,32 @@ class Spectrum(object):
             cl = [lowest_contour * contour_factor ** x for x in range(n_contour)]    
 
             plot_name.contour(
-                self.intensity,
+                self.intensity if rotate is False else np.transpose(self.intensity),
                 cl,
                 colors = plot_color,
                 linewidths=linewidth,
-                extent=(max(self.ppm_window[1]['ppm']),min(self.ppm_window[1]['ppm']),max(self.ppm_window[0]['ppm']),min(self.ppm_window[0]['ppm']),)
+                extent=(max(self.ppm_window[1]['ppm']),min(self.ppm_window[1]['ppm']),max(self.ppm_window[0]['ppm']),min(self.ppm_window[0]['ppm']),) if rotate is False else (max(self.ppm_window[0]['ppm']),min(self.ppm_window[0]['ppm']),max(self.ppm_window[1]['ppm']),min(self.ppm_window[1]['ppm']),)
             )
-            plot_name.set_ylabel(r'$^{'+str(label_info[0][0])+'}$'+str(label_info[0][1])+ ' (ppm)')        
-            plot_name.set_xlabel(r'$^{'+str(label_info[1][0])+'}$'+str(label_info[1][1])+ ' (ppm)')        
+            if rotate is False:
+                plot_name.set_ylabel(r'$^{'+str(label_info[0][0])+'}$'+str(label_info[0][1])+ ' (ppm)')        
+                plot_name.set_xlabel(r'$^{'+str(label_info[1][0])+'}$'+str(label_info[1][1])+ ' (ppm)')        
+                plot_name.set_xlim(left = max(self.ppm_window[1]['ppm']), right = min(self.ppm_window[1]['ppm']))
+                plot_name.set_ylim(bottom = max(self.ppm_window[0]['ppm']), top = min(self.ppm_window[0]['ppm']))
 
-            plot_name.set_xlim(left = max(self.ppm_window[1]['ppm']), right = min(self.ppm_window[1]['ppm']))
-            plot_name.set_ylim(bottom = max(self.ppm_window[0]['ppm']), top = min(self.ppm_window[0]['ppm']))
-                    
+
+            if rotate is True:
+                plot_name.set_xlabel(r'$^{'+str(label_info[0][0])+'}$'+str(label_info[0][1])+ ' (ppm)')        
+                plot_name.set_ylabel(r'$^{'+str(label_info[1][0])+'}$'+str(label_info[1][1])+ ' (ppm)')        
+                plot_name.set_ylim(bottom = max(self.ppm_window[1]['ppm']), top = min(self.ppm_window[1]['ppm']))
+                plot_name.set_xlim(left = max(self.ppm_window[0]['ppm']), right = min(self.ppm_window[0]['ppm']))
+
         if ndim == 1:
+            intensity = self.intensity if intensity_offset is None else self.intensity+intensity_offset
+            ppm_scale = self.ppm_window[0]['ppm'] if ppm_offset is None else self.ppm_window[0]['ppm']+ppm_offset
+
             plot_name.plot(
-                self.ppm_window[0]['ppm'] if rotate is False else self.intensity,
-                self.intensity if rotate is False else self.ppm_window[0]['ppm'],
+                ppm_scale if rotate is False else intensity,
+                intensity if rotate is False else ppm_scale,
                 c = plot_color,
                 lw = linewidth,
                 marker = marker if marker else None,
@@ -127,9 +241,10 @@ class Spectrum(object):
             else:
                 plot_name.set_ylim(bottom = max(self.ppm_window[0]['ppm']), top = min(self.ppm_window[0]['ppm']))             
                 plot_name.set_ylabel(r'$^{'+str(label_info[0][0])+'}$'+str(label_info[0][1])+ ' (ppm)')
-
+                plot_name.spines[['top','right','bottom']].set_visible(False)
+                plot_name.tick_params(labelleft=True,left=True,labelright=False,right=False,labelbottom=False,bottom=False)
     
-    def plot_plotly(self, plot : bool = False, rotate : bool = False, linewidth : float = None, a : bool = False, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None ):
+    def plot_plotly(self, plot : bool = False, rotate : bool = False, linewidth : float = None, a : bool = False, lowest_contour : float = None, contour_factor : float = None, n_contour : float = None, color = None, marker = None, marker_size = None , plot_legend = None,  intensity_offset = None, ppm_offset = None):
  
         # create label axis from universal dictionnary
         label_info = proc.experiment_label(self.udic)
@@ -141,22 +256,33 @@ class Spectrum(object):
         plot_color = 'blue' if color is None else color
         linewidth = 0.5 if linewidth is None else linewidth
 
-        fig = make_subplots(rows=1, cols=1)
+        if plot is False:
+            fig = make_subplots(rows=1, cols=1)
+        else:
+            fig = plot
 
         # only for plotly
         if isinstance(self.intensity, pd.DataFrame):
-            intensity_2_plot = self.intensity.iloc[:,0].to_numpy()
+            if ndim == 1:
+                intensity_2_plot = self.intensity.iloc[:,0].to_numpy()
+            if ndim == 2:
+                intensity_2_plot=self.intensity.to_numpy()
+
         else:
             intensity_2_plot = self.intensity
 
-        if ndim ==1:
+        if ndim == 1:
+            
+            intensity = intensity_2_plot if intensity_offset is None else intensity_2_plot+intensity_offset
+            ppm_scale = self.ppm_window[0]['ppm'] if ppm_offset is None else self.ppm_window[0]['ppm']+ppm_offset
 
             mode = 'markers' if marker else 'lines'
             fig_exp = go.Scatter(
-                x=self.ppm_window[0]['ppm'] if rotate is False else intensity_2_plot, 
-                y=intensity_2_plot if rotate is False else self.ppm_window[0]['ppm'], 
+                x=ppm_scale if rotate is False else intensity, 
+                y=intensity if rotate is False else ppm_scale, 
                 mode=mode, 
-                name='exp. spectrum', 
+                name = None if plot_legend is None else plot_legend, 
+                showlegend=False if plot_legend is None else True,
                 marker_color=plot_color
                 )
             fig.update_layout(xaxis=dict(title='chemical shift (ppm)'))
@@ -169,4 +295,40 @@ class Spectrum(object):
             # fig.update_xaxes(autorange=False, range=[np.max(self.ppm), np.min(self.ppm)])
         fig.update_traces(line={'width': linewidth})
 
+        if ndim == 2:
+            print("###---###")
+            print('2D plots with plotly is not supported yet. Use plot_matplolib instead.')
+            print('###---###')
+            quit()
+            intensity = intensity_2_plot
+
+            lowest_contour = 1e9 if lowest_contour is None else lowest_contour
+            contour_factor = 1.5 if contour_factor is None  else contour_factor
+            n_contour = 10 if n_contour is None  else n_contour
+
+
+            cl = [lowest_contour * contour_factor ** x for x in range(n_contour)] 
+
+            
+            fig_exp = go.Contour(
+                z=intensity,
+                x=self.ppm_window[1]['ppm'],
+                y=self.ppm_window[0]['ppm'],
+
+                line_width=2,
+                # line=list(width=2,color='blue'),
+                contours=dict(
+                    coloring='none',
+                    start=6e8,
+                    end=1e11,
+                    
+                    size=3e9,
+                    )
+            )
+            fig.add_trace(fig_exp, row=1, col=1)
+            fig.update_layout(
+                xaxis = dict(autorange="reversed"),
+                yaxis = dict(autorange="reversed")
+                )
+            
         return fig
